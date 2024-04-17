@@ -1,12 +1,7 @@
 "use client";
 import PDFList from "@/components/pdf-list";
-import { useAuth } from "@/contexts/auth.context";
-import { useEffect, useRef } from "react";
 
 const App: React.FC = () => {
-  const { isLoggedIn } = useAuth();
-  console.log(isLoggedIn);
-
   const pdfs = [
     {
       title: "Test of Fine-Tuning GPT by Astrophysical Data",
