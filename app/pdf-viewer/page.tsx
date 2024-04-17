@@ -1,7 +1,6 @@
-"use client";
-import { useEffect, useRef } from "react";
+import { useRef, useEffect } from "react";
 
-const App: React.FC = () => {
+export default function PDFViewerPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -23,6 +22,4 @@ const App: React.FC = () => {
   }, []);
 
   return <div ref={containerRef} style={{ height: "100vh" }} />;
-};
-
-export default App;
+}

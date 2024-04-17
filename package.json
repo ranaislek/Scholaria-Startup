@@ -12,7 +12,8 @@
     "next": "14.1.4",
     "pspdfkit": "^2024.2.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-icons": "^5.1.0"
   },
   "devDependencies": {
     "@types/node": "^20",
