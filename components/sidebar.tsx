@@ -6,6 +6,8 @@ import ScholariaLogoWhite from "@/assets/scholaria-logo-white.png";
 import { LuExternalLink } from "react-icons/lu";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoAddCircle } from "react-icons/io5";
+import SearchButton from "./search-button";
+import { GrCommand } from "react-icons/gr";
 
 type SideBarItem = {
   title: string;
@@ -46,6 +48,13 @@ const SideBar = () => {
   return (
     <div className="fixed h-screen bg-primary flex flex-col justify-between p-4 w-80 z-50  text-white">
       <div className="flex flex-col gap-2">
+        <SearchButton />
+        {/* TODO: Remove this later, have a shortcuts overlay  */}
+        <div className="flex gap-1 mt-1 text-xs opacity-70 items-center">
+          <span>Or use the shortcut,</span>
+          <GrCommand size={10} />
+          <span>+ S</span>
+        </div>
         <div className="flex justify-between items-center">
           <div className="p-2 font-bold my-1">{"Workspaces"}</div>
           <IoAddCircle
