@@ -31,7 +31,9 @@ export default function MainLayout({
     <>
       <SideBar />
       <SearchInput />
-      <div className="w-full min-h-screen pl-80">{children}</div>
+      <div className="ml-80 p-4 min-h-screen flex flex-col justify-start items-start">
+        {children}
+      </div>
     </>
   );
 }

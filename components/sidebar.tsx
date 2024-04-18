@@ -8,10 +8,12 @@ import { IoIosArrowForward } from "react-icons/io";
 import { IoAddCircle } from "react-icons/io5";
 import SearchButton from "./search-button";
 import { GrCommand } from "react-icons/gr";
+import Link from "next/link";
 
 type SideBarItem = {
   title: string;
   description?: string;
+  route?: string;
   id: number;
 };
 
@@ -43,6 +45,7 @@ const SideBar = () => {
       title: "My Drive",
       description: "Handle all your papers uploads.",
       id: 4,
+      route: "/my-drive",
     },
   ];
   return (
@@ -78,24 +81,25 @@ const SideBar = () => {
         ))}
         <div className="h-10"></div>
         {listOfRoutes.map((c) => (
-          <div
-            key={c.id}
-            className={
-              "flex justify-between items-center cursor-pointer p-2 bg-white rounded-md " +
-              (selectedItem === c.id
-                ? "text-primary bg-opacity-100"
-                : "text-white bg-opacity-5 hover:bg-opacity-15")
-            }
-            onClick={() => setSelectedItem(c.id)}
-          >
-            <div className="flex flex-col">
-              <div>{c.title}</div>
-              {c.description && (
-                <div className="mt-1 text-xs opacity-70">{c.description}</div>
-              )}
+          <Link key={c.id} href={c.route!}>
+            <div
+              className={
+                "flex justify-between items-center cursor-pointer p-2 bg-white rounded-md " +
+                (selectedItem === c.id
+                  ? "text-primary bg-opacity-100"
+                  : "text-white bg-opacity-5 hover:bg-opacity-15")
+              }
+              onClick={() => setSelectedItem(c.id)}
+            >
+              <div className="flex flex-col">
+                <div>{c.title}</div>
+                {c.description && (
+                  <div className="mt-1 text-xs opacity-70">{c.description}</div>
+                )}
+              </div>
+              <IoIosArrowForward />
             </div>
-            <IoIosArrowForward />
-          </div>
+          </Link>
         ))}
       </div>
       <div className="flex justify-between items-center">

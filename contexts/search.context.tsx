@@ -16,7 +16,7 @@ const useSearch = () => React.useContext(SearchContext);
 const SearchProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
-  const [isSearchOverlayOpen, setIsSearchOverlayOpen] = React.useState(true);
+  const [isSearchOverlayOpen, setIsSearchOverlayOpen] = React.useState(false);
 
   return (
     <SearchContext.Provider
