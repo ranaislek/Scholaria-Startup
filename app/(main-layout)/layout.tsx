@@ -3,6 +3,7 @@ import SearchButton from "@/components/search-button";
 import SearchInput from "@/components/search-input";
 import SideBar from "@/components/sidebar";
 import { useSearch } from "@/contexts/search.context";
+import { useSideBar } from "@/contexts/sidebar.context";
 import { useEffect } from "react";
 
 export default function MainLayout({
@@ -11,7 +12,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }>) {
   const { setIsSearchOverlayOpen } = useSearch();
-
+  const { isSideBarOpen } = useSideBar();
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === "s") {
@@ -31,7 +32,12 @@ export default function MainLayout({
     <>
       <SideBar />
       <SearchInput />
-      <div className="ml-80 p-4 min-h-screen flex flex-col justify-start items-start">
+      <div
+        className={
+          "p-6 min-h-screen flex flex-col justify-start items-start transition-all duration-300 " +
+          (isSideBarOpen ? "ml-80" : "ml-20")
+        }
+      >
         {children}
       </div>
     </>

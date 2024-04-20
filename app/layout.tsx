@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/auth.context";
 import { SearchProvider } from "@/contexts/search.context";
+import { SideBarProvider } from "@/contexts/sidebar.context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,9 +20,11 @@ export default function RootLayout({
   return (
     <AuthProvider>
       <SearchProvider>
-        <html lang="en">
-          <body>{children}</body>
-        </html>
+        <SideBarProvider>
+          <html lang="en">
+            <body>{children}</body>
+          </html>
+        </SideBarProvider>
       </SearchProvider>
     </AuthProvider>
   );
