@@ -9,6 +9,7 @@ import SearchButton from "./search-button";
 import { useSideBar } from "@/contexts/sidebar.context";
 import { RiArrowLeftDoubleLine } from "react-icons/ri";
 import { MdDriveFolderUpload } from "react-icons/md";
+import { AiOutlineHome } from "react-icons/ai";
 
 type SideBarItem = {
   title: string;
@@ -26,21 +27,29 @@ const SideBar = () => {
     setIsSideBarOpen(!isSideBarOpen);
   };
 
+  const homeRoute: SideBarItem = {
+    title: "Home",
+    id: 0,
+    route: "/home",
+    icon: (
+      <AiOutlineHome
+        size={25}
+        className="cursor-pointe hover:text-opacity-75"
+      />
+    ),
+  };
+
   const listOfWorkplaces: SideBarItem[] = [
     {
-      title: "Category #01",
-      id: 0,
-    },
-    {
-      title: "Category #02",
+      title: "Category 1",
       id: 1,
     },
     {
-      title: "Category #03",
+      title: "Category 2",
       id: 2,
     },
     {
-      title: "Category #04",
+      title: "Category 3",
       id: 3,
     },
   ];
@@ -76,6 +85,36 @@ const SideBar = () => {
             <span>+ S</span>
           </div>
         )}
+        <div className="h-4"></div>
+        <Link href={"/home"}>
+          <div
+            className={
+              "flex items-center cursor-pointer p-2 bg-white rounded-md " +
+              (selectedItem === homeRoute.id
+                ? "text-primary bg-opacity-100 "
+                : "text-white bg-opacity-5 hover:bg-opacity-15 ") +
+              (isSideBarOpen ? "justify-between" : "justify-center")
+            }
+            onClick={() => setSelectedItem(homeRoute.id)}
+          >
+            {isSideBarOpen ? (
+              <>
+                <div className="flex flex-col">
+                  <div>{homeRoute.title}</div>
+                  {homeRoute.description && (
+                    <div className="mt-1 text-xs opacity-70">
+                      {homeRoute.description}
+                    </div>
+                  )}
+                </div>
+                <IoIosArrowForward />
+              </>
+            ) : (
+              homeRoute.icon
+            )}
+          </div>
+        </Link>
+        <div className="h-4"></div>
         <div
           className={
             "flex items-center " +
@@ -107,7 +146,7 @@ const SideBar = () => {
             </div>
           </div>
         ))}
-        <div className="h-10"></div>
+        <div className="h-4"></div>
         {listOfRoutes.map((c) => (
           <Link key={c.id} href={c.route!}>
             <div

@@ -1,8 +1,10 @@
 "use client";
+import { usePDFViewer } from "@/contexts/pdf-viewer.context";
 import { useRef, useEffect } from "react";
 
 export default function PDFViewerPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const { PDFDocumentUrl } = usePDFViewer();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -15,12 +17,12 @@ export default function PDFViewerPage() {
 
         PSPDFKit.load({
           container,
-          document: "/document.pdf",
+          document: PDFDocumentUrl,
           baseUrl: `${window.location.protocol}//${window.location.host}/`,
         });
       });
     }
-  }, []);
+  }, [PDFDocumentUrl]);
 
-  return <div ref={containerRef} style={{ height: "100vh" }} />;
+  return <div ref={containerRef} style={{ height: "100vh", width: "100%" }} />;
 }
