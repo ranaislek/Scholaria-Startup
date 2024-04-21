@@ -59,7 +59,7 @@ const SideBar = () => {
       title: "My Drive",
       description: "Handle all your papers uploads.",
       id: 4,
-      route: "/my-drive",
+      route: "/mydrive",
       icon: (
         <MdDriveFolderUpload
           size={25}
