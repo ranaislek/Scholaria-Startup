@@ -62,9 +62,10 @@ const SideBar = () => {
 
   return (
     <div
-      className={`fixed h-screen bg-primary flex flex-col justify-between p-4 pt-14 w-80 z-50 text-white transition-all duration-300 ${
-        isSideBarOpen ? "" : "w-20"
-      }`}
+      className={
+        `fixed h-screen bg-primary flex flex-col justify-between p-4 pt-14 z-50 text-white transition-all duration-300 ` +
+        (isSideBarOpen ? "w-80" : "w-20")
+      }
     >
       <div className="flex flex-col gap-2">
         <SearchButton />
