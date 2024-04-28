@@ -50,9 +50,7 @@ const SideBar = () => {
 
   const handleAddWorkspace = () => {
     if (listOfWorkspaces.length >= MAXIMUM_NUMBER_WORKSPACES) {
-      toast.warn(
-        "You reached the limit of free workspaces. Pay a one-time fee and unlock Scholaria Premium!"
-      );
+      toast.warn("You reached the limit of free workspaces.");
       return;
     }
     setIsSideBarOpen(true);
