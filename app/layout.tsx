@@ -21,17 +21,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <ToastsProvider>
-        <AuthProvider>
-          <PDFViewerProvider>
-            <SearchProvider>
-              <SideBarProvider>
-                <body>{children}</body>
-              </SideBarProvider>
-            </SearchProvider>
-          </PDFViewerProvider>
-        </AuthProvider>
-      </ToastsProvider>
+      <body>
+        <ToastsProvider>
+          <AuthProvider>
+            <PDFViewerProvider>
+              <SearchProvider>
+                <SideBarProvider>
+                  <>{children}</>
+                </SideBarProvider>
+              </SearchProvider>
+            </PDFViewerProvider>
+          </AuthProvider>
+        </ToastsProvider>
+      </body>
     </html>
   );
 }

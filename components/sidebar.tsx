@@ -21,11 +21,12 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import { GoCheckCircle } from "react-icons/go";
 import { TbFileBroken } from "react-icons/tb";
 import { useToasts } from "@/contexts/toast.context";
+import { useRouter } from "next/navigation";
 
 type SideBarItem = {
   title: string;
   description?: string;
-  route?: string;
+  route: string;
   id: string;
   icon?: ReactElement;
 };
@@ -33,6 +34,7 @@ type SideBarItem = {
 const MAXIMUM_NUMBER_WORKSPACES = 3;
 
 const SideBar = () => {
+  const router = useRouter();
   const inputRef: RefObject<HTMLInputElement> = useRef(null);
   const editContainer: RefObject<HTMLDivElement> = useRef(null);
   const { isSideBarOpen, setIsSideBarOpen } = useSideBar();
@@ -68,14 +70,20 @@ const SideBar = () => {
   };
 
   const saveNewWorkspace = () => {
+    // TODO: change this to API given id
+
+    const newId = new Date().getTime().toString();
+    const workspaceRoute = `/workspace/${newId}`;
     const newSideBarItem: SideBarItem = {
       title: newWorkspaceName,
-      // TODO: change this to API given id
-      id: new Date().toString(),
+      id: newId,
+      route: workspaceRoute,
     };
 
     setListOfWorkspaces([...listOfWorkspaces, newSideBarItem]);
     setIsEditing(false);
+    setSelectedItem(newId);
+    router.push(`/workspace/${newId}`);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -204,21 +212,22 @@ const SideBar = () => {
           </div>
         )}
         {listOfWorkspaces.map((c) => (
-          <div
-            key={c.id}
-            className={
-              "flex items-center cursor-pointer p-2 bg-white rounded-md " +
-              (selectedItem === c.id
-                ? "text-primary bg-opacity-100 "
-                : "text-white bg-opacity-5 hover:bg-opacity-15 ") +
-              (isSideBarOpen ? "justify-between" : "justify-center")
-            }
-            onClick={() => setSelectedItem(c.id)}
-          >
-            <div>
-              {isSideBarOpen ? c.title : c.title.slice(0, 2).toUpperCase()}
+          <Link key={c.id} href={c.route}>
+            <div
+              className={
+                "flex items-center cursor-pointer p-2 bg-white rounded-md " +
+                (selectedItem === c.id
+                  ? "text-primary bg-opacity-100 "
+                  : "text-white bg-opacity-5 hover:bg-opacity-15 ") +
+                (isSideBarOpen ? "justify-between" : "justify-center")
+              }
+              onClick={() => setSelectedItem(c.id)}
+            >
+              <div>
+                {isSideBarOpen ? c.title : c.title.slice(0, 2).toUpperCase()}
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
         {isSideBarOpen && isEditing && (
           <div

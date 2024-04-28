@@ -1,5 +1,4 @@
 "use client";
-import SearchButton from "@/components/search-button";
 import SearchInput from "@/components/search-input";
 import SideBar from "@/components/sidebar";
 import { useSearch } from "@/contexts/search.context";
