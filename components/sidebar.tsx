@@ -69,7 +69,7 @@ const SideBar = () => {
 
   const saveNewWorkspace = () => {
     // TODO: change this to API given id
-
+    if (newWorkspaceName.trim().length === 0) return;
     const newId = new Date().getTime().toString();
     const workspaceRoute = `/workspace/${newId}`;
     const newSideBarItem: SideBarItem = {
