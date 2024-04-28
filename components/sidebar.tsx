@@ -1,4 +1,11 @@
-import { ReactElement, useState } from "react";
+import {
+  ChangeEventHandler,
+  ReactElement,
+  RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { IoSettingsSharp } from "react-icons/io5";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoAddCircle } from "react-icons/io5";
@@ -10,26 +17,76 @@ import { useSideBar } from "@/contexts/sidebar.context";
 import { RiArrowLeftDoubleLine } from "react-icons/ri";
 import { MdDriveFolderUpload } from "react-icons/md";
 import { AiOutlineHome } from "react-icons/ai";
+import { IoIosCloseCircleOutline } from "react-icons/io";
+import { GoCheckCircle } from "react-icons/go";
+import { TbFileBroken } from "react-icons/tb";
+import { useToasts } from "@/contexts/toast.context";
 
 type SideBarItem = {
   title: string;
   description?: string;
   route?: string;
-  id: number;
+  id: string;
   icon?: ReactElement;
 };
 
+const MAXIMUM_NUMBER_WORKSPACES = 3;
+
 const SideBar = () => {
+  const inputRef: RefObject<HTMLInputElement> = useRef(null);
+  const editContainer: RefObject<HTMLDivElement> = useRef(null);
   const { isSideBarOpen, setIsSideBarOpen } = useSideBar();
-  const [selectedItem, setSelectedItem] = useState<number>();
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [listOfWorkspaces, setListOfWorkspaces] = useState<SideBarItem[]>([]);
+  const [newWorkspaceName, setNewWorkspaceName] = useState<string>("");
+  const [selectedItem, setSelectedItem] = useState<string>();
+  const toast = useToasts();
 
   const toggleSidebar = () => {
     setIsSideBarOpen(!isSideBarOpen);
   };
 
+  const handleAddWorkspace = () => {
+    if (listOfWorkspaces.length >= MAXIMUM_NUMBER_WORKSPACES) {
+      toast.warn(
+        "You reached the limit of free workspaces. Pay a one-time fee and unlock Scholaria Premium!"
+      );
+      return;
+    }
+    setIsSideBarOpen(true);
+    setIsEditing(true);
+  };
+
+  const handleNewWorkspaceName: ChangeEventHandler<HTMLInputElement> = (
+    event
+  ) => {
+    setNewWorkspaceName(event.target.value);
+  };
+
+  const cancelNewWorkspace = () => {
+    setIsEditing(false);
+  };
+
+  const saveNewWorkspace = () => {
+    const newSideBarItem: SideBarItem = {
+      title: newWorkspaceName,
+      // TODO: change this to API given id
+      id: new Date().toString(),
+    };
+
+    setListOfWorkspaces([...listOfWorkspaces, newSideBarItem]);
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      saveNewWorkspace();
+    }
+  };
+
   const homeRoute: SideBarItem = {
     title: "Home",
-    id: 0,
+    id: "home",
     route: "/home",
     icon: (
       <AiOutlineHome
@@ -39,26 +96,11 @@ const SideBar = () => {
     ),
   };
 
-  const listOfWorkplaces: SideBarItem[] = [
-    {
-      title: "Category 1",
-      id: 1,
-    },
-    {
-      title: "Category 2",
-      id: 2,
-    },
-    {
-      title: "Category 3",
-      id: 3,
-    },
-  ];
-
   const listOfRoutes: SideBarItem[] = [
     {
       title: "My Drive",
       description: "Handle all your papers uploads.",
-      id: 4,
+      id: "mydrive",
       route: "/mydrive",
       icon: (
         <MdDriveFolderUpload
@@ -69,6 +111,31 @@ const SideBar = () => {
     },
   ];
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        editContainer.current &&
+        !editContainer.current.contains(event.target as Node)
+      ) {
+        setIsEditing(false);
+      }
+    };
+
+    if (isEditing) {
+      document.body.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.body.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isEditing]);
+
+  useEffect(() => {
+    if (isEditing) {
+      inputRef?.current?.focus();
+    }
+    setNewWorkspaceName("");
+  }, [isEditing]);
   return (
     <div
       className={
@@ -125,11 +192,18 @@ const SideBar = () => {
             <div className="p-2 font-bold my-1">{"Workspaces"}</div>
           )}
           <IoAddCircle
+            onClick={handleAddWorkspace}
             size={30}
             className="cursor-pointer text-white hover:text-opacity-75"
           />
         </div>
-        {listOfWorkplaces.map((c) => (
+        {isSideBarOpen && listOfWorkspaces.length === 0 && !isEditing && (
+          <div className="opacity-50 flex flex-col justify-center items-center gap-2">
+            <TbFileBroken size={50} />
+            <div>Looks empty here... </div>
+          </div>
+        )}
+        {listOfWorkspaces.map((c) => (
           <div
             key={c.id}
             className={
@@ -146,6 +220,33 @@ const SideBar = () => {
             </div>
           </div>
         ))}
+        {isSideBarOpen && isEditing && (
+          <div
+            ref={editContainer}
+            className="rounded-md bg-white bg-opacity-45 p-2 flex justify-between items-center"
+          >
+            <input
+              value={newWorkspaceName}
+              className="appearnce-none bg-transparent"
+              type="text"
+              onChange={handleNewWorkspaceName}
+              onKeyDown={handleKeyDown}
+              ref={inputRef}
+            />
+            <div className="flex justify-center items-center">
+              <GoCheckCircle
+                onClick={saveNewWorkspace}
+                size={27}
+                className="cursor-pointer text-white text-opacity-50 hover:text-opacity-100"
+              />
+              <IoIosCloseCircleOutline
+                onClick={cancelNewWorkspace}
+                size={30}
+                className="cursor-pointer text-white text-opacity-50 hover:text-opacity-100"
+              />
+            </div>
+          </div>
+        )}
         <div className="h-4"></div>
         {listOfRoutes.map((c) => (
           <Link key={c.id} href={c.route!}>

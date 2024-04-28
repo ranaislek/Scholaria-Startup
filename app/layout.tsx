@@ -5,6 +5,7 @@ import { AuthProvider } from "@/contexts/auth.context";
 import { SearchProvider } from "@/contexts/search.context";
 import { SideBarProvider } from "@/contexts/sidebar.context";
 import { PDFViewerProvider } from "@/contexts/pdf-viewer.context";
+import { ToastsProvider } from "@/contexts/toast.context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,16 +20,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <AuthProvider>
-      <PDFViewerProvider>
-        <SearchProvider>
-          <SideBarProvider>
-            <html lang="en">
-              <body>{children}</body>
-            </html>
-          </SideBarProvider>
-        </SearchProvider>
-      </PDFViewerProvider>
-    </AuthProvider>
+    <html lang="en">
+      <ToastsProvider>
+        <AuthProvider>
+          <PDFViewerProvider>
+            <SearchProvider>
+              <SideBarProvider>
+                <body>{children}</body>
+              </SideBarProvider>
+            </SearchProvider>
+          </PDFViewerProvider>
+        </AuthProvider>
+      </ToastsProvider>
+    </html>
   );
 }
