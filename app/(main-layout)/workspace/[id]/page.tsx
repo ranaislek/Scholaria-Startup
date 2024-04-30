@@ -61,8 +61,8 @@ function WorkspacePage({ params }: { params: { id: string } }) {
   const removeFromWorkspace = () => {
     setIsLoading(true);
     setTimeout(() => {
-      const updatedPapers = workspacePapers?.filter((p) =>
-        selectedPapersIds.includes(p.id)
+      const updatedPapers = workspacePapers?.filter(
+        (p) => !selectedPapersIds.includes(p.id)
       );
       setWorkspacePapers(updatedPapers);
       clearSelectedPapers();
