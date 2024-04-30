@@ -43,7 +43,6 @@ function WorkspacePage({ params }: { params: { id: string } }) {
 
   const markAsCompleted = () => {
     setIsLoading(true);
-
     setTimeout(() => {
       const updatedPapers = workspacePapers?.map((p) => {
         if (selectedPapersIds.includes(p.id)) {
@@ -61,7 +60,6 @@ function WorkspacePage({ params }: { params: { id: string } }) {
 
   const removeFromWorkspace = () => {
     setIsLoading(true);
-
     setTimeout(() => {
       const updatedPapers = workspacePapers?.filter((p) =>
         selectedPapersIds.includes(p.id)
@@ -73,6 +71,7 @@ function WorkspacePage({ params }: { params: { id: string } }) {
   };
 
   const orderAlphatically = () => {
+    setIsFilteringMode(false);
     setIsLoading(true);
     setTimeout(() => {
       const updatedPapers = workspacePapers?.sort((a, b) =>
@@ -84,8 +83,8 @@ function WorkspacePage({ params }: { params: { id: string } }) {
   };
 
   const orderFromOldToNew = () => {
+    setIsFilteringMode(false);
     setIsLoading(true);
-
     setTimeout(() => {
       const updatedPapers = workspacePapers?.sort(
         (a, b) => a.uploadDate.getTime() - b.uploadDate.getTime()
@@ -96,8 +95,8 @@ function WorkspacePage({ params }: { params: { id: string } }) {
   };
 
   const orderFromNewToOld = () => {
+    setIsFilteringMode(false);
     setIsLoading(true);
-
     setTimeout(() => {
       const updatedPapers = workspacePapers?.sort(
         (a, b) => b.uploadDate.getTime() - a.uploadDate.getTime()
