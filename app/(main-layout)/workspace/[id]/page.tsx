@@ -10,18 +10,10 @@ import { useWorkspace } from "@/contexts/workspace.context";
 import { redirect } from "next/navigation";
 import { IWorkspace } from "@/models/workspace";
 import PaperGrid from "@/components/paper-grid";
+import { papers } from "@/data/papers";
 
 function WorkspacePage({ params }: { params: { id: string } }) {
-  const {
-    workspaces,
-    selectedPapersIds,
-    clearSelectedPapers,
-    removePapersFromWorkspace,
-    markPapersAsCompletedInWorkspace,
-    orderWorkspacePapersAlphabetically,
-    orderWorkspacePapersFromNewToOld,
-    orderWorkspacePapersFromOldToNew,
-  } = useWorkspace();
+  const { workspaces, selectedPapersIds, clearSelectedPapers } = useWorkspace();
 
   const targetWorkspace: IWorkspace | undefined = workspaces.find(
     (w) => w.id === params.id
@@ -31,126 +23,135 @@ function WorkspacePage({ params }: { params: { id: string } }) {
     redirect("/404");
   }
 
-  // const filtersRef = useRef<HTMLDivElement>(null);
+  const filtersRef = useRef<HTMLDivElement>(null);
   const sortRef = useRef<HTMLDivElement>(null);
-
+  // This is mock data
+  const [workspacePapers, setWorkspacePapers] = useState<Paper[]>(papers);
+  const [filtersResults, setFiltersResults] = useState<Paper[]>(papers);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSortListOpen, setIsSortListOpen] = useState<boolean>(false);
-  // const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
+  const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
+  const [isFilteringMode, setIsFilteringMode] = useState<boolean>(false);
 
   const toggleSortList = () => {
     setIsSortListOpen(!isSortListOpen);
   };
 
-  // const toggleFilters = () => {
-  //   setIsFiltersOpen(!isFiltersOpen);
-  // };
+  const toggleFilters = () => {
+    setIsFiltersOpen(!isFiltersOpen);
+  };
 
   const markAsCompleted = () => {
     setIsLoading(true);
 
     setTimeout(() => {
-      markPapersAsCompletedInWorkspace(targetWorkspace.id);
+      const updatedPapers = workspacePapers?.map((p) => {
+        if (selectedPapersIds.includes(p.id)) {
+          return { ...p, isCompleted: true };
+        } else {
+          return p;
+        }
+      });
 
+      setWorkspacePapers(updatedPapers || []);
       clearSelectedPapers();
       setIsLoading(false);
-    }, 1000);
+    }, 500);
   };
 
   const removeFromWorkspace = () => {
     setIsLoading(true);
 
     setTimeout(() => {
-      removePapersFromWorkspace(targetWorkspace.id);
-
+      const updatedPapers = workspacePapers?.filter((p) =>
+        selectedPapersIds.includes(p.id)
+      );
+      setWorkspacePapers(updatedPapers);
       clearSelectedPapers();
       setIsLoading(false);
-    }, 1000);
+    }, 500);
   };
 
   const orderAlphatically = () => {
     setIsLoading(true);
     setTimeout(() => {
-      orderWorkspacePapersAlphabetically(targetWorkspace.id);
+      const updatedPapers = workspacePapers?.sort((a, b) =>
+        a.title.localeCompare(b.title)
+      );
+      setWorkspacePapers(updatedPapers);
       setIsLoading(false);
-    }, 1000);
-  };
-
-  const orderFromNewToOld = () => {
-    setIsLoading(true);
-
-    setTimeout(() => {
-      orderWorkspacePapersFromNewToOld(targetWorkspace.id);
-      setIsLoading(false);
-    }, 1000);
+    }, 500);
   };
 
   const orderFromOldToNew = () => {
     setIsLoading(true);
 
     setTimeout(() => {
-      orderWorkspacePapersFromOldToNew(targetWorkspace.id);
+      const updatedPapers = workspacePapers?.sort(
+        (a, b) => a.uploadDate.getTime() - b.uploadDate.getTime()
+      );
+      setWorkspacePapers(updatedPapers);
       setIsLoading(false);
-    }, 1000);
+    }, 500);
   };
 
-  // const showCompletedOnly = () => {
-  //   setIsLoading(true);
-  //   setTimeout(() => {
-  //     setWorkspacePapers(() => {
-  //       return (
-  //         workspaces
-  //           .find((w) => w.id === targetWorkspace.id)
-  //           ?.papers.filter((paper) => paper.isCompleted) || []
-  //       );
-  //     });
-  //     setIsLoading(false);
-  //   }, 1000);
-  // };
+  const orderFromNewToOld = () => {
+    setIsLoading(true);
 
-  // const showUnreadPapers = () => {
-  //   setIsLoading(true);
-  //   setTimeout(() => {
-  //     setWorkspacePapers(() => {
-  //       return (
-  //         workspaces
-  //           .find((w) => w.id === targetWorkspace.id)
-  //           ?.papers.filter((paper) => !paper.isCompleted) || []
-  //       );
-  //     });
+    setTimeout(() => {
+      const updatedPapers = workspacePapers?.sort(
+        (a, b) => b.uploadDate.getTime() - a.uploadDate.getTime()
+      );
+      setWorkspacePapers(updatedPapers);
+      setIsLoading(false);
+    }, 500);
+  };
 
-  //     setIsLoading(false);
-  //   }, 1000);
-  // };
+  const showCompletedOnly = () => {
+    setIsFilteringMode(true);
+    setIsLoading(true);
+    setTimeout(() => {
+      setFiltersResults(
+        workspacePapers.filter((paper) => paper.isCompleted) || []
+      );
+      setIsLoading(false);
+    }, 500);
+  };
 
-  // const clearFilters = () => {
-  //   setIsLoading(true);
-  //   setTimeout(() => {
-  //     setWorkspacePapers(
-  //       workspaces.find((w) => w.id === targetWorkspace.id)?.papers || []
-  //     );
-  //     setIsLoading(false);
-  //   }, 1000);
-  // };
+  const showUnreadPapers = () => {
+    setIsFilteringMode(true);
+    setIsLoading(true);
+    setTimeout(() => {
+      setFiltersResults(
+        workspacePapers.filter((paper) => !paper.isCompleted) || []
+      );
 
-  // useEffect(() => {
-  //   const handleClickOutside = (event: MouseEvent) => {
-  //     if (
-  //       filtersRef.current &&
-  //       !filtersRef.current.contains(event.target as Node)
-  //     ) {
-  //       setIsFiltersOpen(false);
-  //     }
-  //   };
+      setIsLoading(false);
+    }, 500);
+  };
 
-  //   if (isFiltersOpen) {
-  //     document.body.addEventListener("mousedown", handleClickOutside);
-  //   }
+  const clearFilters = () => {
+    setIsFilteringMode(false);
+  };
 
-  //   return () => {
-  //     document.body.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, [isFiltersOpen]);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        filtersRef.current &&
+        !filtersRef.current.contains(event.target as Node)
+      ) {
+        setIsFiltersOpen(false);
+      }
+    };
+
+    if (isFiltersOpen) {
+      document.body.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.body.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isFiltersOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -198,7 +199,7 @@ function WorkspacePage({ params }: { params: { id: string } }) {
               </div>
             </>
           )}
-          {/* <div
+          <div
             ref={filtersRef}
             onClick={toggleFilters}
             style={{ borderWidth: 1 }}
@@ -228,7 +229,7 @@ function WorkspacePage({ params }: { params: { id: string } }) {
                 </div>
               </div>
             )}
-          </div> */}
+          </div>
           <div
             ref={sortRef}
             onClick={toggleSortList}
@@ -264,14 +265,8 @@ function WorkspacePage({ params }: { params: { id: string } }) {
       </div>
       {!isLoading && (
         <PaperGrid
-          isSelectable
-          papers={
-            workspaces
-              .find((w) => w.id === targetWorkspace.id)
-              ?.papers.map((i) => {
-                return { ...i } as Paper;
-              }) || []
-          }
+          isSelectable={!isFilteringMode}
+          papers={isFilteringMode ? filtersResults : workspacePapers}
         />
       )}
       {isLoading && (

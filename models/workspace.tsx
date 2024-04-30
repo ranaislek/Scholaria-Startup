@@ -4,5 +4,5 @@ export type IWorkspace = {
   name: string;
   id: string;
   createdOn: Date;
-  papers: Paper[];
+  papers?: Paper[];
 };
