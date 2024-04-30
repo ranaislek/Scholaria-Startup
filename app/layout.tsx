@@ -6,6 +6,7 @@ import { SearchProvider } from "@/contexts/search.context";
 import { SideBarProvider } from "@/contexts/sidebar.context";
 import { PDFViewerProvider } from "@/contexts/pdf-viewer.context";
 import { ToastsProvider } from "@/contexts/toast.context";
+import { WorkspacesProvider } from "@/contexts/workspace.context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,13 +25,15 @@ export default function RootLayout({
       <body>
         <ToastsProvider>
           <AuthProvider>
-            <PDFViewerProvider>
-              <SearchProvider>
-                <SideBarProvider>
-                  <>{children}</>
-                </SideBarProvider>
-              </SearchProvider>
-            </PDFViewerProvider>
+            <WorkspacesProvider>
+              <PDFViewerProvider>
+                <SearchProvider>
+                  <SideBarProvider>
+                    <>{children}</>
+                  </SideBarProvider>
+                </SearchProvider>
+              </PDFViewerProvider>
+            </WorkspacesProvider>
           </AuthProvider>
         </ToastsProvider>
       </body>

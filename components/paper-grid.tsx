@@ -1,23 +1,30 @@
 import React from "react";
-import { useRouter } from "next/navigation";
-import PDFCard, { PDF } from "./pdf-card";
+import PaperCard from "./paper-card";
+import { Paper } from "@/models/paper";
 
-export interface PDFListButtonProps {
+export interface PaperGridButtonProps {
   label: string;
   onClick: () => void;
 }
 
-export interface PDFListProps {
-  title: string;
+export interface PaperGridProps {
+  title?: string;
   subtitle?: string;
-  button?: PDFListButtonProps;
-  pdfs: PDF[];
+  isSelectable?: boolean;
+  button?: PaperGridButtonProps;
+  papers: Paper[];
 }
 
-function PDFList({ pdfs, title, subtitle, button }: PDFListProps) {
+const PaperGrid: React.FC<PaperGridProps> = ({
+  papers,
+  title,
+  subtitle,
+  button,
+  isSelectable,
+}) => {
   return (
     <div className="flex flex-col w-full">
-      <div className="flex justify-between items-start pb-4">
+      <div className="flex justify-between items-start py-4">
         <div className="flex flex-col">
           <div className="text-2xl font-bold">{title}</div>
           {subtitle && <div className="text-gray-500">{subtitle}</div>}
@@ -31,19 +38,13 @@ function PDFList({ pdfs, title, subtitle, button }: PDFListProps) {
           </div>
         )}
       </div>
-      <div className="flex gap-8">
-        {pdfs.map((pdf, index) => (
-          <PDFCard
-            size="md"
-            key={index}
-            title={pdf.title}
-            authors={pdf.authors}
-            pdfUrl={pdf.pdfUrl}
-          />
+      <div className="flex flex-wrap gap-x-4 gap-y-2">
+        {papers.map((paper, index) => (
+          <PaperCard key={paper.id} {...paper} isSelectable={isSelectable} />
         ))}
       </div>
     </div>
   );
-}
+};
 
-export default PDFList;
+export default PaperGrid;

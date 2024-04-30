@@ -22,6 +22,8 @@ import { GoCheckCircle } from "react-icons/go";
 import { TbFileBroken } from "react-icons/tb";
 import { useToasts } from "@/contexts/toast.context";
 import { useRouter } from "next/navigation";
+import { useWorkspace } from "@/contexts/workspace.context";
+import { IWorkspace } from "@/models/workspace";
 
 type SideBarItem = {
   title: string;
@@ -34,62 +36,6 @@ type SideBarItem = {
 const MAXIMUM_NUMBER_WORKSPACES = 3;
 
 const SideBar = () => {
-  const router = useRouter();
-  const inputRef: RefObject<HTMLInputElement> = useRef(null);
-  const editContainer: RefObject<HTMLDivElement> = useRef(null);
-  const { isSideBarOpen, setIsSideBarOpen } = useSideBar();
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [listOfWorkspaces, setListOfWorkspaces] = useState<SideBarItem[]>([]);
-  const [newWorkspaceName, setNewWorkspaceName] = useState<string>("");
-  const [selectedItem, setSelectedItem] = useState<string>();
-  const toast = useToasts();
-
-  const toggleSidebar = () => {
-    setIsSideBarOpen(!isSideBarOpen);
-  };
-
-  const handleAddWorkspace = () => {
-    if (listOfWorkspaces.length >= MAXIMUM_NUMBER_WORKSPACES) {
-      toast.warn("You reached the limit of free workspaces.");
-      return;
-    }
-    setIsSideBarOpen(true);
-    setIsEditing(true);
-  };
-
-  const handleNewWorkspaceName: ChangeEventHandler<HTMLInputElement> = (
-    event
-  ) => {
-    setNewWorkspaceName(event.target.value);
-  };
-
-  const cancelNewWorkspace = () => {
-    setIsEditing(false);
-  };
-
-  const saveNewWorkspace = () => {
-    // TODO: change this to API given id
-    if (newWorkspaceName.trim().length === 0) return;
-    const newId = new Date().getTime().toString();
-    const workspaceRoute = `/workspace/${newId}`;
-    const newSideBarItem: SideBarItem = {
-      title: newWorkspaceName,
-      id: newId,
-      route: workspaceRoute,
-    };
-
-    setListOfWorkspaces([...listOfWorkspaces, newSideBarItem]);
-    setIsEditing(false);
-    setSelectedItem(newId);
-    router.push(`/workspace/${newId}`);
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      saveNewWorkspace();
-    }
-  };
-
   const homeRoute: SideBarItem = {
     title: "Home",
     id: "home",
@@ -117,6 +63,62 @@ const SideBar = () => {
     },
   ];
 
+  const router = useRouter();
+  const inputRef: RefObject<HTMLInputElement> = useRef(null);
+  const editContainer: RefObject<HTMLDivElement> = useRef(null);
+  const { isSideBarOpen, setIsSideBarOpen } = useSideBar();
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [listOfWorkspaces, setListOfWorkspaces] = useState<SideBarItem[]>([]);
+  const [newWorkspaceName, setNewWorkspaceName] = useState<string>("");
+  const [selectedItem, setSelectedItem] = useState<string>(homeRoute.id);
+  const toast = useToasts();
+  const { workspaces, addNewWorkspace } = useWorkspace();
+
+  const toggleSidebar = () => {
+    setIsSideBarOpen(!isSideBarOpen);
+  };
+
+  const handleAddWorkspace = () => {
+    if (listOfWorkspaces.length >= MAXIMUM_NUMBER_WORKSPACES) {
+      toast.warn("You reached the limit of free workspaces.");
+      return;
+    }
+    setIsSideBarOpen(true);
+    setIsEditing(true);
+  };
+
+  const handleNewWorkspaceName: ChangeEventHandler<HTMLInputElement> = (
+    event
+  ) => {
+    setNewWorkspaceName(event.target.value);
+  };
+
+  const cancelNewWorkspace = () => {
+    setIsEditing(false);
+  };
+
+  const saveNewWorkspace = async () => {
+    // TODO: change this to API given id
+    if (newWorkspaceName.trim().length === 0) return;
+    const newId = new Date().getTime().toString();
+    const newWorkspace: IWorkspace = {
+      name: newWorkspaceName,
+      id: newId,
+      createdOn: new Date(),
+      papers: [],
+    };
+    await addNewWorkspace(newWorkspace);
+    setIsEditing(false);
+    setSelectedItem(newId);
+    router.push(`/workspace/${newId}`);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      saveNewWorkspace();
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -142,6 +144,18 @@ const SideBar = () => {
     }
     setNewWorkspaceName("");
   }, [isEditing]);
+
+  useEffect(() => {
+    const workspacesSidebarItems: SideBarItem[] = workspaces.map((w) => {
+      return {
+        title: w.name,
+        route: `/workspace/${w.id}`,
+        id: w.id,
+      };
+    });
+    setListOfWorkspaces(workspacesSidebarItems);
+  }, [workspaces]);
+
   return (
     <div
       className={

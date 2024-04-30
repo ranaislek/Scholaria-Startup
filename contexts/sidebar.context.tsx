@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
 
-type IAuth = {
+type ISideBar = {
   isSideBarOpen: boolean;
   setIsSideBarOpen: (v: boolean) => void;
 };
 
-const SidBarContext = React.createContext<IAuth>({
+const SidBarContext = React.createContext<ISideBar>({
   isSideBarOpen: false,
   setIsSideBarOpen: () => null,
 });

@@ -1,8 +1,8 @@
 "use client";
-import PDFList, { PDFListProps } from "@/components/pdf-list";
+import PaperCarousel, { PaperCarouselProps } from "@/components/paper-carousel";
 
 const App: React.FC = () => {
-  const sectionsList: PDFListProps[] = [
+  const sectionsList: PaperCarouselProps[] = [
     {
       title: "Continue Reading",
       subtitle: "Papers you read in the past week",
@@ -10,16 +10,20 @@ const App: React.FC = () => {
         label: "See all",
         onClick: () => {},
       },
-      pdfs: [
+      papers: [
         {
           title: "Test of Fine-Tuning GPT by Astrophysical Data",
           authors: ["Yu Wang", "Shu-Rui Zhang"],
           pdfUrl: "https://arxiv.org/pdf/2404.10019.pdf",
+          id: "",
+          uploadDate: new Date(),
         },
         {
           title: "On the Content Bias in Frechet Video Distance",
           authors: ["Songwei Ge", "Aniruddha Mahapatra", "Gaurav Parmar"],
           pdfUrl: "https://arxiv.org/pdf/2404.12391.pdf",
+          id: "",
+          uploadDate: new Date(),
         },
         {
           title: "Moving Object Segmentation: All You Need Is SAM (and Flow)",
@@ -30,6 +34,8 @@ const App: React.FC = () => {
             "Andrew Zisserman",
           ],
           pdfUrl: "https://arxiv.org/pdf/2404.12389.pdf",
+          id: "",
+          uploadDate: new Date(),
         },
       ],
     },
@@ -40,16 +46,20 @@ const App: React.FC = () => {
         label: "More",
         onClick: () => {},
       },
-      pdfs: [
+      papers: [
         {
           title: "Test of Fine-Tuning GPT by Astrophysical Data",
           authors: ["Yu Wang", "Shu-Rui Zhang"],
           pdfUrl: "https://arxiv.org/pdf/2404.10019.pdf",
+          id: "",
+          uploadDate: new Date(),
         },
         {
           title: "On the Content Bias in Frechet Video Distance",
           authors: ["Songwei Ge", "Aniruddha Mahapatra", "Gaurav Parmar"],
           pdfUrl: "https://arxiv.org/pdf/2404.12391.pdf",
+          id: "",
+          uploadDate: new Date(),
         },
         {
           title: "Moving Object Segmentation: All You Need Is SAM (and Flow)",
@@ -60,6 +70,8 @@ const App: React.FC = () => {
             "Andrew Zisserman",
           ],
           pdfUrl: "https://arxiv.org/pdf/2404.12389.pdf",
+          id: "",
+          uploadDate: new Date(),
         },
       ],
     },
@@ -70,16 +82,20 @@ const App: React.FC = () => {
         label: "See all",
         onClick: () => {},
       },
-      pdfs: [
+      papers: [
         {
           title: "Test of Fine-Tuning GPT by Astrophysical Data",
           authors: ["Yu Wang", "Shu-Rui Zhang"],
           pdfUrl: "https://arxiv.org/pdf/2404.10019.pdf",
+          id: "",
+          uploadDate: new Date(),
         },
         {
           title: "On the Content Bias in Frechet Video Distance",
           authors: ["Songwei Ge", "Aniruddha Mahapatra", "Gaurav Parmar"],
           pdfUrl: "https://arxiv.org/pdf/2404.12391.pdf",
+          id: "",
+          uploadDate: new Date(),
         },
         {
           title: "Moving Object Segmentation: All You Need Is SAM (and Flow)",
@@ -90,6 +106,8 @@ const App: React.FC = () => {
             "Andrew Zisserman",
           ],
           pdfUrl: "https://arxiv.org/pdf/2404.12389.pdf",
+          id: "",
+          uploadDate: new Date(),
         },
       ],
     },
@@ -100,16 +118,20 @@ const App: React.FC = () => {
         label: "More",
         onClick: () => {},
       },
-      pdfs: [
+      papers: [
         {
           title: "Test of Fine-Tuning GPT by Astrophysical Data",
           authors: ["Yu Wang", "Shu-Rui Zhang"],
           pdfUrl: "https://arxiv.org/pdf/2404.10019.pdf",
+          id: "",
+          uploadDate: new Date(),
         },
         {
           title: "On the Content Bias in Frechet Video Distance",
           authors: ["Songwei Ge", "Aniruddha Mahapatra", "Gaurav Parmar"],
           pdfUrl: "https://arxiv.org/pdf/2404.12391.pdf",
+          id: "",
+          uploadDate: new Date(),
         },
         {
           title: "Moving Object Segmentation: All You Need Is SAM (and Flow)",
@@ -120,6 +142,8 @@ const App: React.FC = () => {
             "Andrew Zisserman",
           ],
           pdfUrl: "https://arxiv.org/pdf/2404.12389.pdf",
+          id: "",
+          uploadDate: new Date(),
         },
       ],
     },
@@ -128,7 +152,7 @@ const App: React.FC = () => {
   return (
     <div className="p-6">
       {sectionsList.map((s, index) => (
-        <PDFList key={index} {...s} />
+        <PaperCarousel key={index} {...s} />
       ))}
     </div>
   );
