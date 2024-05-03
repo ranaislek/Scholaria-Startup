@@ -7,6 +7,9 @@ import { SideBarProvider } from "@/contexts/sidebar.context";
 import { PDFViewerProvider } from "@/contexts/pdf-viewer.context";
 import { ToastsProvider } from "@/contexts/toast.context";
 import { WorkspacesProvider } from "@/contexts/workspace.context";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+// const queryClient = new QueryClient();
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,6 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        {/* <QueryClientProvider client={queryClient}> */}
         <ToastsProvider>
           <AuthProvider>
             <WorkspacesProvider>
@@ -36,6 +40,7 @@ export default function RootLayout({
             </WorkspacesProvider>
           </AuthProvider>
         </ToastsProvider>
+        {/* </QueryClientProvider> */}
       </body>
     </html>
   );

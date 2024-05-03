@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.32.1",
     "next": "14.1.4",
     "pspdfkit": "^2024.2.0",
     "react": "^18",
