@@ -8,7 +8,18 @@ export default function PDFViewerPage() {
 
   useEffect(() => {
     const container = containerRef.current;
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(
+      PDFDocumentUrl
+    )}`;
 
+    fetch(proxyUrl)
+      .then((response) => {
+        if (response.ok) {
+          return response.blob();
+        }
+        throw new Error("Network response was not ok.");
+      })
+      .catch((error) => console.error("Error fetching the PDF:", error));
     if (container && typeof window !== "undefined") {
       import("pspdfkit").then((PSPDFKit: any) => {
         if (PSPDFKit) {
@@ -17,7 +28,7 @@ export default function PDFViewerPage() {
 
         PSPDFKit.load({
           container,
-          document: "./document.pdf",
+          document: proxyUrl,
           baseUrl: `${window.location.protocol}//${window.location.host}/`,
         });
       });
