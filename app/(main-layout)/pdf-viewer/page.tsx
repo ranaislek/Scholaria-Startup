@@ -17,7 +17,7 @@ export default function PDFViewerPage() {
 
         PSPDFKit.load({
           container,
-          document: PDFDocumentUrl,
+          document: "./document.pdf",
           baseUrl: `${window.location.protocol}//${window.location.host}/`,
         });
       });

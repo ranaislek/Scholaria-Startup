@@ -24,7 +24,13 @@ function PaperCard({
   size = "sm",
   id,
 }: Paper) {
-  const embedPdfUrl = pdfUrl + "#toolbar=0&page=1";
+  const ensureHttpsUrl = (url: string) => {
+    const parsedUrl = new URL(url);
+    parsedUrl.protocol = "https:";
+    return parsedUrl.toString();
+  };
+
+  const embedPdfUrl = ensureHttpsUrl(pdfUrl + "#toolbar=0&page=1");
 
   const { isPaperSelected, togglePaperSelect, selectedPapersIds } =
     useWorkspace();
