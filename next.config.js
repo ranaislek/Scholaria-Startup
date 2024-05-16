@@ -11,26 +11,17 @@ module.exports = {
     ],
   },
   output: "export",
-  // async redirects() {
-  //   return [
-  //     {
-  //       source: "/",
-  //       destination: "/home",
-  //       permanent: true,
-  //     },
-  //   ];
-  // },
-  // async headers() {
-  //   return [
-  //     {
-  //       source: "/(.*)",
-  //       headers: [
-  //         {
-  //           key: "Content-Security-Policy",
-  //           value: "upgrade-insecure-requests",
-  //         },
-  //       ],
-  //     },
-  //   ];
-  // },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: "upgrade-insecure-requests",
+          },
+        ],
+      },
+    ];
+  },
 };
