@@ -3432,10 +3432,10 @@ prop-types@^15.8.1:
     object-assign "^4.1.1"
     react-is "^16.13.1"
 
-pspdfkit@^2024.3.1:
-  version "2024.3.1"
-  resolved "https://registry.yarnpkg.com/pspdfkit/-/pspdfkit-2024.3.1.tgz#07574844ea808aa67e7710552109e8fe6da75091"
-  integrity sha512-zhnpFRBWZtyd6eRNOfOctuG0mbmne/NqYqOh+VN9ld0CemuRzNuh1Ulb/bJAuOkHN1w8oQ5NbLIc15dHLkzdSw==
+pspdfkit@^2024.3.2:
+  version "2024.3.2"
+  resolved "https://registry.yarnpkg.com/pspdfkit/-/pspdfkit-2024.3.2.tgz#75ceee005f8b024dbb5306b575b11e8b7b28de3a"
+  integrity sha512-USkxCzIWWj57E0mZ0mw2cu9JzvJMt1HSTAVq7HUI8y5Z1MVnMwbkB7PM7ioh5icR+XwS5T1kqTHq7iJBBLeRXA==
   dependencies:
     "@types/react" "^17.0.39"
 
