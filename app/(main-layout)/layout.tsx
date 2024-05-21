@@ -1,4 +1,5 @@
 "use client";
+import DialogBox from "@/components/dialog-box";
 import SearchInput from "@/components/search-input";
 import SideBar from "@/components/sidebar";
 import { useSearch } from "@/contexts/search.context";
@@ -31,6 +32,7 @@ export default function MainLayout({
     <>
       <SideBar />
       <SearchInput />
+      <DialogBox />
       <div
         className={
           "p-6 min-h-screen flex flex-col justify-start items-start transition-all duration-300 " +

@@ -1,16 +1,17 @@
 import React, { useState, ChangeEvent, DragEvent } from "react";
 import { SlCloudUpload } from "react-icons/sl";
 
-const FileInput: React.FC = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+const FileInput: React.FC<{ onFileSelect: (file: File | null) => void }> = ({
+  onFileSelect,
+}) => {
   const [dragging, setDragging] = useState<boolean>(false);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type === "application/pdf") {
-      setSelectedFile(file);
+      onFileSelect(file);
     } else {
-      setSelectedFile(null);
+      onFileSelect(null);
       alert("Please select a PDF file.");
     }
   };
@@ -29,20 +30,15 @@ const FileInput: React.FC = () => {
     setDragging(false);
     const file = event.dataTransfer.files[0];
     if (file && file.type === "application/pdf") {
-      setSelectedFile(file);
+      onFileSelect(file);
     } else {
-      setSelectedFile(null);
+      onFileSelect(null);
       alert("Please drop a PDF file.");
     }
   };
 
-  const handleClick = () => {
-    document.getElementById("file-upload")?.click();
-  };
-
   return (
     <div
-      onClick={handleClick}
       className={`w-full gap-4 flex flex-col justify-center items-center mt-1 p-4 border-2 border-dashed rounded-md ${
         dragging ? "border-blue-500" : "border-gray-300"
       }`}
@@ -68,11 +64,6 @@ const FileInput: React.FC = () => {
       >
         Choose File
       </label>
-      {selectedFile && (
-        <div className="mt-2">
-          <p className="text-sm text-gray-500">{selectedFile.name}</p>
-        </div>
-      )}
     </div>
   );
 };

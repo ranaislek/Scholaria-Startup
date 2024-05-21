@@ -50,10 +50,10 @@ const SideBar = () => {
 
   const listOfRoutes: SideBarItem[] = [
     {
-      title: "My Drive",
+      title: "My Library",
       description: "Handle all your papers uploads.",
       id: "mydrive",
-      route: "/mydrive",
+      route: "/mylibrary",
       icon: (
         <MdDriveFolderUpload
           size={25}
@@ -159,7 +159,7 @@ const SideBar = () => {
   return (
     <div
       className={
-        `fixed h-screen bg-primary flex flex-col justify-between p-4 pt-14 z-50 text-white transition-all duration-300 ` +
+        `fixed h-screen bg-primary flex flex-col justify-between p-4 pt-14 z-40 text-white transition-all duration-300 ` +
         (isSideBarOpen ? "w-80" : "w-20")
       }
     >

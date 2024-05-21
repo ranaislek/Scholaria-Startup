@@ -3,7 +3,7 @@
   "build": {
     "beforeBuildCommand": "yarn build",
     "beforeDevCommand": "yarn dev",
-    "devPath": "http://localhost:3000/home",
+    "devPath": "http://localhost:3000/mylibrary",
     "distDir": "../out"
   },
   "package": {
@@ -48,7 +48,7 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": "upgrade-insecure-requests"
     },
     "updater": {
       "active": false
