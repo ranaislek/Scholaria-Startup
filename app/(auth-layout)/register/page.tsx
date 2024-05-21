@@ -1,5 +1,6 @@
 "use client";
 import { API_BASE_URL } from "@/api";
+import Loader from "@/components/loader";
 import { useAuth } from "@/contexts/auth.context";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -14,6 +15,7 @@ type RegisterPageCreds = {
 export default function RegisterPage() {
   const { setUser } = useAuth();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [creds, setCreds] = useState<RegisterPageCreds>({
     email: "",
     password: "",
@@ -34,6 +36,7 @@ export default function RegisterPage() {
       console.error("Passwords do not match");
       return;
     }
+    setIsLoading(true);
     const res = await fetch(`${API_BASE_URL}/auth/register`, {
       method: "POST",
       headers: {
@@ -45,9 +48,10 @@ export default function RegisterPage() {
         password: creds.password,
       }),
     });
+    setIsLoading(false);
     const data = await res.json();
-    if (data.error) {
-      alert(data.error);
+    if (data.error || data.message) {
+      alert(data.error ?? data.message);
       return;
     }
     setUser(data);
@@ -84,11 +88,11 @@ export default function RegisterPage() {
         />
       </div>
       <button
+        disabled={isLoading}
         onClick={handleSubmit}
-        type="submit"
-        className="bg-primary text-center py-2 w-full text-white font-bold mt-6 rounded-md hover:bg-opacity-75"
+        className="flex justify-center items-center h-10 bg-primary text-center py-2 w-full text-white font-bold mt-6 rounded-md hover:bg-opacity-75"
       >
-        Register
+        {isLoading ? <Loader size={20} color={"white"} /> : "Register"}
       </button>
 
       <div className="mt-2">

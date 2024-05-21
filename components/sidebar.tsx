@@ -24,6 +24,7 @@ import { useToasts } from "@/contexts/toast.context";
 import { useRouter } from "next/navigation";
 import { useWorkspace } from "@/contexts/workspace.context";
 import { IWorkspace } from "@/models/workspace";
+import { useAuth } from "@/contexts/auth.context";
 
 type SideBarItem = {
   title: string;
@@ -66,13 +67,17 @@ const SideBar = () => {
   const router = useRouter();
   const inputRef: RefObject<HTMLInputElement> = useRef(null);
   const editContainer: RefObject<HTMLDivElement> = useRef(null);
+  const settingsContainer: RefObject<HTMLDivElement> = useRef(null);
   const { isSideBarOpen, setIsSideBarOpen } = useSideBar();
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [showUserOptionsDropdown, setShowUserOptionsDropdown] =
+    useState<boolean>(false);
   const [listOfWorkspaces, setListOfWorkspaces] = useState<SideBarItem[]>([]);
   const [newWorkspaceName, setNewWorkspaceName] = useState<string>("");
   const [selectedItem, setSelectedItem] = useState<string>(homeRoute.id);
   const toast = useToasts();
   const { workspaces, addNewWorkspace } = useWorkspace();
+  const { logout } = useAuth();
 
   const toggleSidebar = () => {
     setIsSideBarOpen(!isSideBarOpen);
@@ -110,7 +115,7 @@ const SideBar = () => {
     await addNewWorkspace(newWorkspace);
     setIsEditing(false);
     setSelectedItem(newId);
-    router.push(`/workspace/${newId}`);
+    router.push(`/workspace?id=${newId}`);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -139,6 +144,25 @@ const SideBar = () => {
   }, [isEditing]);
 
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        settingsContainer.current &&
+        !settingsContainer.current.contains(event.target as Node)
+      ) {
+        setShowUserOptionsDropdown(false);
+      }
+    };
+
+    if (showUserOptionsDropdown) {
+      document.body.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.body.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showUserOptionsDropdown]);
+
+  useEffect(() => {
     if (isEditing) {
       inputRef?.current?.focus();
     }
@@ -149,7 +173,7 @@ const SideBar = () => {
     const workspacesSidebarItems: SideBarItem[] = workspaces.map((w) => {
       return {
         title: w.name,
-        route: `/workspace/${w.id}`,
+        route: `/workspace?id=${w.id}`,
         id: w.id,
       };
     });
@@ -325,9 +349,34 @@ const SideBar = () => {
         </div>
         <div className="flex gap-2">
           <IoSettingsSharp
+            onClick={() => {
+              setShowUserOptionsDropdown(!showUserOptionsDropdown);
+            }}
             size={25}
             className="cursor-pointer text-white hover:text-opacity-75"
           />
+          {showUserOptionsDropdown && (
+            <div
+              ref={settingsContainer}
+              className={
+                "w-48 absolute bottom-8 p-2 bg-white shadow-lg rounded-md transition-all duration-300 " +
+                (isSideBarOpen ? "left-80" : "left-20")
+              }
+            >
+              <div className="hover:bg-gray-100 p-2 text-primary rounded-md cursor-pointer">
+                Account Details
+              </div>
+              <div className="hover:bg-gray-100 p-2 text-primary rounded-md cursor-pointer">
+                Billing
+              </div>
+              <div
+                className="hover:bg-gray-100 p-2 text-primary rounded-md cursor-pointer"
+                onClick={() => logout()}
+              >
+                Logout
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div

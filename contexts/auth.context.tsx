@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
 type IAuth = {
-  isLoggedIn: boolean;
   user: IUser | null;
   setUser: (v: IUser) => void;
+  logout: () => void;
 };
 
 type IUser = {
@@ -16,9 +16,9 @@ type IUser = {
 };
 
 const AuthContext = React.createContext<IAuth>({
-  isLoggedIn: false,
   user: null,
   setUser: () => null,
+  logout: () => null,
 });
 
 const useAuth = () => React.useContext(AuthContext);
@@ -26,9 +26,14 @@ const useAuth = () => React.useContext(AuthContext);
 const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const router = useRouter();
   const [user, setUser] = React.useState<IUser | null>(null);
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem("token");
+    router.replace("/login");
+  };
 
   useEffect(() => {
     if (!user?.token) return;
@@ -59,7 +64,7 @@ const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, setUser }}>
+    <AuthContext.Provider value={{ user, setUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

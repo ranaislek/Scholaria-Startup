@@ -1,6 +1,7 @@
 "use client";
 
 import { API_BASE_URL } from "@/api";
+import Loader from "@/components/loader";
 import { useAuth } from "@/contexts/auth.context";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -14,6 +15,7 @@ type LoginPageCreds = {
 export default function LoginPage() {
   const router = useRouter();
   const { setUser } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const [creds, setCreds] = useState<LoginPageCreds>({
     email: "",
     password: "",
@@ -29,6 +31,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setIsLoading(true);
     const res = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
       headers: {
@@ -37,9 +40,10 @@ export default function LoginPage() {
       },
       body: JSON.stringify(creds),
     });
+    setIsLoading(false);
     const data = await res.json();
-    if (data.error) {
-      alert(data.error);
+    if (data.error || data.message) {
+      alert(data.error ?? data.message);
       return;
     }
     setUser(data);
@@ -68,10 +72,11 @@ export default function LoginPage() {
         />
       </div>
       <button
+        disabled={isLoading}
         onClick={handleSubmit}
-        className="bg-primary text-center py-2 w-full text-white font-bold mt-6 rounded-md hover:bg-opacity-75"
+        className="flex justify-center items-center h-10 bg-primary text-center py-2 w-full text-white font-bold mt-6 rounded-md hover:bg-opacity-75"
       >
-        Login
+        {isLoading ? <Loader size={20} color={"white"} /> : "Login"}
       </button>
 
       <div className="mt-2">
