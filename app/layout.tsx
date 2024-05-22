@@ -9,6 +9,8 @@ import { ToastsProvider } from "@/contexts/toast.context";
 import { WorkspacesProvider } from "@/contexts/workspace.context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { DialogProvider } from "@/contexts/dialog.context";
+import { Suspense } from "react";
+import PageLoader from "@/components/page-loader";
 
 // const queryClient = new QueryClient();
 
@@ -27,22 +29,24 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* <QueryClientProvider client={queryClient}> */}
-        <ToastsProvider>
-          <DialogProvider>
-            <AuthProvider>
-              <WorkspacesProvider>
-                <PDFViewerProvider>
-                  <SearchProvider>
-                    <SideBarProvider>
-                      <>{children}</>
-                    </SideBarProvider>
-                  </SearchProvider>
-                </PDFViewerProvider>
-              </WorkspacesProvider>
-            </AuthProvider>
-          </DialogProvider>
-        </ToastsProvider>
+        <Suspense fallback={<PageLoader />}>
+          {/* <QueryClientProvider client={queryClient}> */}
+          <ToastsProvider>
+            <DialogProvider>
+              <AuthProvider>
+                <WorkspacesProvider>
+                  <PDFViewerProvider>
+                    <SearchProvider>
+                      <SideBarProvider>
+                        <>{children}</>
+                      </SideBarProvider>
+                    </SearchProvider>
+                  </PDFViewerProvider>
+                </WorkspacesProvider>
+              </AuthProvider>
+            </DialogProvider>
+          </ToastsProvider>
+        </Suspense>
         {/* </QueryClientProvider> */}
       </body>
     </html>
