@@ -50,7 +50,7 @@ export default function RegisterPage() {
     });
     setIsLoading(false);
     const data = await res.json();
-    if (data.error || data.message) {
+    if (data.error) {
       alert(data.error ?? data.message);
       return;
     }
