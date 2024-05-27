@@ -16,11 +16,11 @@ const cardSize = {
 
 function PaperCard({
   title,
-  authors,
-  pdfUrl,
+  authors = [],
+  pdf = "https://arxiv.org/pdf/2404.10019.pdf",
   isSelectable,
   isCompleted,
-  uploadDate,
+  publicationDate,
   size = "sm",
   id,
 }: Paper) {
@@ -30,7 +30,7 @@ function PaperCard({
     return parsedUrl.toString();
   };
 
-  const embedPdfUrl = ensureHttpsUrl(pdfUrl + "#toolbar=0&page=1");
+  const embedPdfUrl = ensureHttpsUrl(pdf + "#toolbar=0&page=1");
 
   const { isPaperSelected, togglePaperSelect, selectedPapersIds } =
     useWorkspace();
@@ -39,7 +39,7 @@ function PaperCard({
   const [isSelected, setIsSelected] = useState<boolean>(false);
 
   const openPaperViewer = () => {
-    setPDFDocumentUrl(pdfUrl);
+    setPDFDocumentUrl(pdf);
     router.push("/pdf-viewer");
   };
 
@@ -79,7 +79,7 @@ function PaperCard({
           {authors.join(", ")}
         </p>
         <p className="mt-2 text-gray-300 overflow-hidden text-xs">
-          Uploaded on {uploadDate.toDateString()}
+          Uploaded on {publicationDate?.toDateString()}
         </p>
       </div>
       {isSelectable && (

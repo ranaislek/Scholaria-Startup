@@ -86,8 +86,10 @@ export default function Workspace({ id }: { id: string }) {
     setIsFilteringMode(false);
     setIsLoading(true);
     setTimeout(() => {
-      const updatedPapers = workspacePapers?.sort(
-        (a, b) => a.uploadDate.getTime() - b.uploadDate.getTime()
+      const updatedPapers = workspacePapers?.sort((a, b) =>
+        a.publicationDate && b.publicationDate
+          ? a.publicationDate.getTime() - b.publicationDate.getTime()
+          : 0
       );
       setWorkspacePapers(updatedPapers);
       setIsLoading(false);
@@ -98,8 +100,10 @@ export default function Workspace({ id }: { id: string }) {
     setIsFilteringMode(false);
     setIsLoading(true);
     setTimeout(() => {
-      const updatedPapers = workspacePapers?.sort(
-        (a, b) => b.uploadDate.getTime() - a.uploadDate.getTime()
+      const updatedPapers = workspacePapers?.sort((a, b) =>
+        a.publicationDate && b.publicationDate
+          ? b.publicationDate.getTime() - a.publicationDate.getTime()
+          : 0
       );
       setWorkspacePapers(updatedPapers);
       setIsLoading(false);

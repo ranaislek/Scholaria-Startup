@@ -7,7 +7,7 @@ type ISideBar = {
 };
 
 const SidBarContext = React.createContext<ISideBar>({
-  isSideBarOpen: false,
+  isSideBarOpen: true,
   setIsSideBarOpen: () => null,
 });
 
@@ -16,7 +16,7 @@ const useSideBar = () => React.useContext(SidBarContext);
 const SideBarProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
-  const [isSideBarOpen, setIsSideBarOpen] = React.useState(false);
+  const [isSideBarOpen, setIsSideBarOpen] = React.useState(true);
 
   return (
     <SidBarContext.Provider value={{ isSideBarOpen, setIsSideBarOpen }}>

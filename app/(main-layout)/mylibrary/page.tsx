@@ -9,7 +9,7 @@ import { getReadableTimestamp } from "@/helpers/date.helper";
 
 type FileData = {
   fileName: string;
-  uploadDate: Date;
+  publicationDate: Date;
   id: string;
   fileUrl: string;
 };
@@ -55,7 +55,7 @@ const MyLibraryPage = () => {
     const fileUrl = URL.createObjectURL(newFile);
     const newFileData = {
       fileName: newFile.name,
-      uploadDate: new Date(),
+      publicationDate: new Date(),
       id: newFile.name + Date.now(),
       fileUrl: fileUrl,
     };
@@ -110,7 +110,7 @@ const MyLibraryPage = () => {
                 {fileData.fileName}
               </span>
               <span className="text-sm text-gray-500 mx-2">
-                {getReadableTimestamp(fileData.uploadDate)}
+                {getReadableTimestamp(fileData.publicationDate)}
               </span>
               <div
                 ref={buttonRef}
