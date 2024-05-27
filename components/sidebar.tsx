@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { useWorkspace } from "@/contexts/workspace.context";
 import { IWorkspace } from "@/models/workspace";
 import { useAuth } from "@/contexts/auth.context";
+import Avatar from "boring-avatars";
 
 type SideBarItem = {
   title: string;
@@ -77,7 +78,7 @@ const SideBar = () => {
   const [selectedItem, setSelectedItem] = useState<string>(homeRoute.id);
   const toast = useToasts();
   const { workspaces, addNewWorkspace } = useWorkspace();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   const toggleSidebar = () => {
     setIsSideBarOpen(!isSideBarOpen);
@@ -331,19 +332,23 @@ const SideBar = () => {
         }
       >
         <div className="cursor-pointer flex items-center gap-2 opacity-100 hover:opacity-75">
-          <Image
-            src={
-              "https://www.svgrepo.com/show/382099/female-avatar-girl-face-woman-user-2.svg"
-            }
-            width={50}
-            height={50}
-            alt="scholaria-logo"
-            className="rounded-full border-white border-2"
-          />
+          {user?.email && (
+            <div className="rounded-full border-white border-2">
+              <Avatar
+                size={50}
+                name={user?.email}
+                variant="beam"
+                colors={["#beed80", "#59d999", "#31ada1", "#51647a", "#453c5c"]}
+              />
+            </div>
+          )}
           {isSideBarOpen && (
             <div className="flex flex-col">
-              <div className="font-bold"> Marie </div>
-              <div className="font-light text-sm"> marie.curie@gmail.com </div>
+              <div className="font-bold"> </div>
+              <div className="font-light text-sm">
+                {" "}
+                {user?.email?.split("@")[0]}{" "}
+              </div>
             </div>
           )}
         </div>

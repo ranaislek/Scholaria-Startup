@@ -42,7 +42,7 @@ const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
 
   useEffect(() => {
     const getUserData = async (token: string) => {
-      const userData = await fetch(`${API_BASE_URL}/user-profile`, {
+      const userData = await fetch(`${API_BASE_URL}/user/profile`, {
         method: "GET",
         headers: {
           Accept: "application/json",
