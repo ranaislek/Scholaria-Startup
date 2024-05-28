@@ -8,7 +8,7 @@ module.exports = {
       },
     ],
   },
-  output: "export",
+  // output: "export",
   async headers() {
     return [
       {
