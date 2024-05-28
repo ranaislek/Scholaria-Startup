@@ -41,7 +41,9 @@ const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
   }, [user?.token]);
 
   useEffect(() => {
-    const getUserData = async (token: string) => {
+    const getUserData = async () => {
+      const token = localStorage.getItem("token");
+
       const userData = await fetch(`${API_BASE_URL}/user/profile`, {
         method: "GET",
         headers: {
@@ -53,14 +55,13 @@ const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
 
       setUser(await userData.json());
     };
-
     const token = localStorage.getItem("token");
     if (!token) {
       router.replace("/login");
       return;
     }
 
-    getUserData(token);
+    getUserData();
   }, []);
 
   return (

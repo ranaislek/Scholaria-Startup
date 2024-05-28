@@ -1,8 +1,6 @@
 "use client";
 import { API_BASE_URL } from "@/api";
-import { Paper } from "@/models/paper";
 import { IWorkspace } from "@/models/workspace";
-import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 
 import React, { useEffect } from "react";
@@ -13,7 +11,8 @@ type IWorkspaceContext = {
   setSelectedPapersIds: (v: string[]) => void;
   togglePaperSelect: (v: string) => void;
   isPaperSelected: (v: string) => boolean;
-  addNewWorkspace: (workspace: IWorkspace) => void;
+  addNewWorkspace: (workspace: IWorkspace) => Promise<string | undefined>;
+  deleteWorkspace: (workspaceId: string) => Promise<void>;
   clearSelectedPapers: () => void;
 };
 
@@ -36,7 +35,8 @@ const WorkspaceContext = React.createContext<IWorkspaceContext>({
   setSelectedPapersIds: () => null,
   togglePaperSelect: () => null,
   isPaperSelected: () => false,
-  addNewWorkspace: () => null,
+  addNewWorkspace: async () => undefined,
+  deleteWorkspace: async () => undefined,
   clearSelectedPapers: () => null,
 });
 
@@ -45,28 +45,74 @@ const useWorkspace = () => React.useContext(WorkspaceContext);
 const WorkspacesProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
-  // const { data } = useQuery({
-  //   queryKey: ["my-workspaces"],
-  //   queryFn: () =>
-  //     fetch(`${API_BASE_URL}/workspaces/my-workspaces`).then((res) =>
-  //       res.json()
-  //     ),
-  // });
-
   const location = usePathname();
   const [selectedPapersIds, setSelectedPapersIds] = React.useState<string[]>(
     []
   );
 
-  const [workspaces, setWorkspaces] =
-    React.useState<IWorkspace[]>(mockWorkspaces);
+  const [workspaces, setWorkspaces] = React.useState<IWorkspace[]>([]);
 
   useEffect(() => {
-    // TODO: on mount fetch user workspaces
+    //  on mount fetch user workspaces
+    const getUserWorkspaces = async () => {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_BASE_URL}/workspaces/my-workspaces`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      const workspacesData = data.map((w: any) => {
+        return { ...w, id: w._id };
+      });
+      setWorkspaces(workspacesData);
+    };
+
+    getUserWorkspaces();
   }, []);
 
-  const addNewWorkspace = async (newWorkspace: IWorkspace) => {
-    await setWorkspaces([...workspaces, newWorkspace]);
+  const deleteWorkspace = async (workspaceId: string): Promise<void> => {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${API_BASE_URL}/workspaces/delete`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ workspaceId }),
+    });
+
+    setWorkspaces((prev) => prev.filter((w) => w.id !== workspaceId));
+  };
+
+  const addNewWorkspace = async (
+    newWorkspace: IWorkspace
+  ): Promise<string | undefined> => {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${API_BASE_URL}/workspaces/new`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(newWorkspace),
+    });
+
+    const newWorkspaceRes = await res.json();
+
+    setWorkspaces([
+      ...workspaces,
+      { ...newWorkspace, id: newWorkspaceRes.workspaceId },
+    ]);
+
+    return newWorkspaceRes.workspaceId;
   };
 
   const isPaperSelected = (id: string): boolean =>
@@ -99,6 +145,7 @@ const WorkspacesProvider: React.FC<{ children: React.ReactElement }> = ({
         isPaperSelected,
         addNewWorkspace,
         clearSelectedPapers,
+        deleteWorkspace,
       }}
     >
       {children}

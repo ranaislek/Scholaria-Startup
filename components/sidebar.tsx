@@ -104,19 +104,20 @@ const SideBar = () => {
   };
 
   const saveNewWorkspace = async () => {
-    // TODO: change this to API given id
     if (newWorkspaceName.trim().length === 0) return;
-    const newId = new Date().getTime().toString();
     const newWorkspace: IWorkspace = {
       name: newWorkspaceName,
-      id: newId,
       createdOn: new Date(),
       papers: [],
+      id: "",
     };
-    await addNewWorkspace(newWorkspace);
+
+    const newWorkspaceId = await addNewWorkspace(newWorkspace);
+
     setIsEditing(false);
-    setSelectedItem(newId);
-    router.push(`/workspace?id=${newId}`);
+    setSelectedItem(newWorkspaceId ?? homeRoute.id);
+
+    router.push(`/workspace?id=${newWorkspaceId}`);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {

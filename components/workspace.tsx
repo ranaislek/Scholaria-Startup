@@ -11,28 +11,41 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import { PiSortAscendingBold } from "react-icons/pi";
 import Loader from "./loader";
 import PaperGrid from "./paper-grid";
+import { AiOutlineDelete } from "react-icons/ai";
 
 export default function Workspace({ id }: { id: string }) {
-  const { workspaces, selectedPapersIds, clearSelectedPapers } = useWorkspace();
+  const {
+    workspaces,
+    selectedPapersIds,
+    clearSelectedPapers,
+    deleteWorkspace,
+  } = useWorkspace();
 
   const targetWorkspace: IWorkspace | undefined = workspaces.find(
     (w) => w.id === id
   );
 
   if (!targetWorkspace) {
-    redirect("/404");
+    redirect("/home");
   }
 
   const filtersRef = useRef<HTMLDivElement>(null);
   const sortRef = useRef<HTMLDivElement>(null);
   // This is mock data
-  const [workspacePapers, setWorkspacePapers] = useState<Paper[]>(papers);
-  const [filtersResults, setFiltersResults] = useState<Paper[]>(papers);
+  const [workspacePapers, setWorkspacePapers] = useState<Paper[]>(
+    targetWorkspace.papers ?? []
+  );
+  const [filtersResults, setFiltersResults] = useState<Paper[]>(
+    targetWorkspace.papers ?? []
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSortListOpen, setIsSortListOpen] = useState<boolean>(false);
   const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
   const [isFilteringMode, setIsFilteringMode] = useState<boolean>(false);
 
+  const deleteCurrentWorkspace = async () => {
+    await deleteWorkspace(targetWorkspace.id);
+  };
   const toggleSortList = () => {
     setIsSortListOpen(!isSortListOpen);
   };
@@ -178,7 +191,7 @@ export default function Workspace({ id }: { id: string }) {
         <div>
           <div className="text-2xl font-bold">{`${targetWorkspace.name} Workspace`}</div>
           <div className="text-xs text-gray-500">
-            Created on {targetWorkspace.createdOn.toDateString()}
+            Created on {new Date(targetWorkspace.createdOn).toDateString()}
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -263,6 +276,14 @@ export default function Workspace({ id }: { id: string }) {
                 </div>
               </div>
             )}
+          </div>
+          <div
+            onClick={deleteCurrentWorkspace}
+            style={{ borderWidth: 1 }}
+            className="h-10 relative cursor-pointer text-red-900 border-red-900 flex items-center gap-1 px-2 py-1 bg-red-100 rounded-md"
+          >
+            <AiOutlineDelete />
+            <div>Delete Workspace</div>
           </div>
         </div>
       </div>
