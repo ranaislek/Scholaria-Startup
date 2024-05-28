@@ -12,7 +12,6 @@ const storage = new Storage({
 });
 
 const bucketName = "scholaria-datalake";
-export const bucket = storage.bucket(bucketName);
 
 export async function POST(request: Request) {
   const { fileType } = await request.json();
