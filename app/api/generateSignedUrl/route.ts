@@ -4,11 +4,11 @@ import { v4 as uuidv4 } from "uuid";
 import path from "path";
 
 const storage = new Storage({
-  keyFilename: path.join(
-    process.cwd(),
-    "possible-origin-422618-j0-0aa4557cb7b8.json"
-  ),
-  projectId: "possible-origin-422618-j0",
+  projectId: process.env.GCLOUD_PROJECT_ID,
+  credentials: {
+    client_email: process.env.GCLOUD_CLIENT_EMAIL,
+    private_key: process.env.GCLOUD_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+  },
 });
 
 const bucketName = "scholaria-datalake";
