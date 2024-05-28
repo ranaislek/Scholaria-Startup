@@ -15,7 +15,7 @@ export const getReadableTimestamp = (date: Date) => {
     " - " +
     h +
     ":" +
-    min;
+    (min < 10 ? "0" + min : min);
 
   return formattedDate;
 };

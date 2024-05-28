@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 
 type ISPDFViewer = {
   PDFDocumentUrl: string;
@@ -17,7 +17,9 @@ const PDFViewerProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
   const [PDFDocumentUrl, setPDFDocumentUrl] = React.useState("");
-
+  useEffect(() => {
+    console.log(PDFDocumentUrl);
+  }, [PDFDocumentUrl]);
   return (
     <PDFViewerContext.Provider value={{ PDFDocumentUrl, setPDFDocumentUrl }}>
       {children}
