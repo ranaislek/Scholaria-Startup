@@ -10,36 +10,100 @@ import { API_BASE_URL } from "@/api";
 import { usePDFViewer } from "@/contexts/pdf-viewer.context";
 import { redirect, useRouter } from "next/navigation";
 import Loader from "@/components/loader";
+import { useToasts } from "@/contexts/toast.context";
+import { FileData } from "@/models/file";
 
-type FileData = {
-  fileName: string;
-  createdOn: Date;
-  id: string;
-  type: string;
-  fileUrl: string;
-};
+const WorkspacePicker = () => {
+  const {
+    workspaces,
+    setSelectedWorkspacesIds,
+    clearSelectedPapers,
+    selectedWorkspacesIds,
+    selectedPapersIds,
+  } = useWorkspace();
+  const { setIsDialogBoxOpen } = useDialogBox();
+  const toasts = useToasts();
 
-const WorkplacePicker = () => {
-  const { workspaces } = useWorkspace();
+  const handleCheckboxChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    id: string
+  ) => {
+    if (!selectedWorkspacesIds.includes(id)) {
+      setSelectedWorkspacesIds([...selectedWorkspacesIds, id]);
+    } else {
+      setSelectedWorkspacesIds(
+        selectedWorkspacesIds.filter((workspaceId) => workspaceId !== id)
+      );
+    }
+  };
 
+  const cancelAction = () => {
+    setIsDialogBoxOpen(false);
+  };
+
+  const addPaperToWorkspace = async () => {
+    const paperId = selectedPapersIds[0];
+    const token = localStorage.getItem("token");
+
+    const promises = selectedWorkspacesIds.map(async (workspaceId) => {
+      await fetch(`${API_BASE_URL}/workspaces/add-paper`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ workspaceId, paperId }),
+      });
+    });
+    await Promise.all(promises);
+    clearSelectedPapers();
+    setSelectedWorkspacesIds([]);
+    setIsDialogBoxOpen(false);
+    toasts.success("Paper added to workspace successfully");
+  };
   return (
-    <div className="flex flex-col gap-2">
-      <div className="font-bold text-2xl">Choose workspaces</div>
-      {workspaces.map((w) => (
-        <div key={w.id} className="flex gap-2">
-          <input type="checkbox" id={w.id} name={w.name} value={w.name} />
-          <label htmlFor={w.id}>{w.name}</label>
+    <>
+      <div className="flex flex-col gap-2">
+        <div className="font-bold text-2xl">Choose workspaces</div>
+        {workspaces.map((w) => (
+          <div key={w.id} className="flex gap-2">
+            <input
+              type="checkbox"
+              id={w.id}
+              name={w.name}
+              value={w.name}
+              checked={selectedWorkspacesIds.includes(w.id)}
+              onChange={(e) => handleCheckboxChange(e, w.id)}
+            />
+            <label htmlFor={w.id}>{w.name}</label>
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-4 self-end">
+        <div
+          onClick={cancelAction}
+          style={{ borderWidth: 1 }}
+          className="flex justify-center items-center h-10 min-w-24 cursor-pointer text-gray-900 border-gray-900 gap-1 px-2 py-1 bg-gray-100 rounded-md"
+        >
+          <div>Cancel</div>
         </div>
-      ))}
-    </div>
+        <div
+          onClick={addPaperToWorkspace}
+          style={{ borderWidth: 1 }}
+          className="flex justify-center items-center h-10 min-w-24 cursor-pointer text-white gap-1 px-2 py-1 bg-primary rounded-md"
+        >
+          <div>Done</div>
+        </div>
+      </div>
+    </>
   );
 };
 
 const MyLibraryPage = () => {
   const router = useRouter();
+  const { setSelectedPapersIds, workspaces } = useWorkspace();
+  const toasts = useToasts();
   const [files, setFiles] = useState<FileData[]>([]);
-  const [message, setMessage] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const buttonRef = useRef(null);
   const { setIsDialogBoxOpen, setDialogBoxContent } = useDialogBox();
@@ -85,6 +149,7 @@ const MyLibraryPage = () => {
       fileUrl: publicUrl,
     };
     setFiles((prevFiles) => [newFileData, ...prevFiles]);
+    toasts.success("File uploaded successfully");
   };
 
   const deleteFile = (fileId: string) => {
@@ -96,17 +161,14 @@ const MyLibraryPage = () => {
     router.push("/pdf-viewer");
   };
 
-  const addToWorkspace = () => {
-    setDialogBoxContent(<WorkplacePicker />);
+  const openAddToWorkspacePicker = (paperId: string) => {
+    if (workspaces.length === 0) {
+      toasts.error("You don't have any workspaces!");
+      return;
+    }
+    setSelectedPapersIds([paperId]);
+    setDialogBoxContent(<WorkspacePicker />);
     setIsDialogBoxOpen(true);
-  };
-
-  const hidePopup = () => {
-    setShowPopup(false);
-  };
-
-  const workspaceSelected = () => {
-    hidePopup();
   };
 
   useEffect(() => {
@@ -139,9 +201,6 @@ const MyLibraryPage = () => {
       <div className="text-gray-500">Handle all your paper uploads here.</div>
       <div className="mt-4 w-full">
         <FileInput onFileSelect={handleFileSelect} />
-        {message && (
-          <div className="text-green-500 text-center my-2">{message}</div>
-        )}
         <div className="mt-4 flex flex-col">
           {isLoading ? (
             <div className="mt-10 flex w-full justify-center items-center">
@@ -164,7 +223,7 @@ const MyLibraryPage = () => {
                 </span>
                 <div
                   ref={buttonRef}
-                  onClick={addToWorkspace}
+                  onClick={() => openAddToWorkspacePicker(fileData.id)}
                   className="cursor-pointer text-blue-900 flex items-center gap-1 px-2 py-1 rounded-md mx-2 hover:bg-gray-100"
                 >
                   <MdDriveFileMoveOutline />

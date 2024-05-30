@@ -1,5 +1,6 @@
 "use client";
 import { API_BASE_URL } from "@/api";
+import { PaperData } from "@/models/paper";
 import { IWorkspace } from "@/models/workspace";
 import { usePathname } from "next/navigation";
 
@@ -9,6 +10,8 @@ type IWorkspaceContext = {
   workspaces: IWorkspace[];
   selectedPapersIds: string[];
   setSelectedPapersIds: (v: string[]) => void;
+  selectedWorkspacesIds: string[];
+  setSelectedWorkspacesIds: (v: string[]) => void;
   togglePaperSelect: (v: string) => void;
   isPaperSelected: (v: string) => boolean;
   addNewWorkspace: (workspace: IWorkspace) => Promise<string | undefined>;
@@ -16,23 +19,12 @@ type IWorkspaceContext = {
   clearSelectedPapers: () => void;
 };
 
-const mockWorkspaces = [
-  {
-    name: "My PhD Thesis",
-    id: "123",
-    createdOn: new Date("10/08/2023"),
-  },
-  {
-    name: "Adam's Thesis",
-    id: "1234",
-    createdOn: new Date("10/10/2023"),
-  },
-];
-
 const WorkspaceContext = React.createContext<IWorkspaceContext>({
   workspaces: [],
   selectedPapersIds: [],
   setSelectedPapersIds: () => null,
+  selectedWorkspacesIds: [],
+  setSelectedWorkspacesIds: () => null,
   togglePaperSelect: () => null,
   isPaperSelected: () => false,
   addNewWorkspace: async () => undefined,
@@ -49,6 +41,9 @@ const WorkspacesProvider: React.FC<{ children: React.ReactElement }> = ({
   const [selectedPapersIds, setSelectedPapersIds] = React.useState<string[]>(
     []
   );
+  const [selectedWorkspacesIds, setSelectedWorkspacesIds] = React.useState<
+    string[]
+  >([]);
 
   const [workspaces, setWorkspaces] = React.useState<IWorkspace[]>([]);
 
@@ -65,9 +60,24 @@ const WorkspacesProvider: React.FC<{ children: React.ReactElement }> = ({
         },
       });
       const data = await res.json();
-      const workspacesData = data.map((w: any) => {
-        return { ...w, id: w._id };
-      });
+      const workspacesData = data
+        .map((w: any) => {
+          return { ...w, id: w._id };
+        })
+        .map((w: any) => {
+          return {
+            ...w,
+            papers: w.papers.map((p: any) => {
+              return {
+                id: p.paperData._id,
+                title: p.paperData.fileName,
+                pdf: p.paperData.fileUrl,
+                publicationDate: new Date(p.paperData.createdOn),
+              } as PaperData;
+            }),
+          };
+        });
+
       setWorkspaces(workspacesData);
     };
 
@@ -146,6 +156,8 @@ const WorkspacesProvider: React.FC<{ children: React.ReactElement }> = ({
         addNewWorkspace,
         clearSelectedPapers,
         deleteWorkspace,
+        selectedWorkspacesIds,
+        setSelectedWorkspacesIds,
       }}
     >
       {children}

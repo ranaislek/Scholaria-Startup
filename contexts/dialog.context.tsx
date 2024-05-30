@@ -7,8 +7,6 @@ type IDialogBox = {
   setIsDialogBoxOpen: (value: boolean) => void;
   dialogBoxContent: React.ReactNode;
   setDialogBoxContent: (value: React.ReactNode) => void;
-  action: () => void | null;
-  setAction: (value: () => void) => void;
 };
 
 const DialogContext = React.createContext<IDialogBox>({
@@ -16,8 +14,6 @@ const DialogContext = React.createContext<IDialogBox>({
   setIsDialogBoxOpen: () => null,
   dialogBoxContent: null,
   setDialogBoxContent: () => null,
-  action: () => null,
-  setAction: () => null,
 });
 
 const useDialogBox = () => React.useContext(DialogContext);
@@ -25,7 +21,6 @@ const useDialogBox = () => React.useContext(DialogContext);
 const DialogProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
-  const [action, setAction] = React.useState<() => void>(() => {});
   const [isDialogBoxOpen, setIsDialogBoxOpen] = React.useState(false);
   const [dialogBoxContent, setDialogBoxContent] =
     React.useState<React.ReactNode>(null);
@@ -39,13 +34,10 @@ const DialogProvider: React.FC<{ children: React.ReactElement }> = ({
     if (isDialogBoxOpen) return;
 
     setDialogBoxContent(null);
-    setAction(() => {});
   }, [isDialogBoxOpen]);
   return (
     <DialogContext.Provider
       value={{
-        action,
-        setAction,
         isDialogBoxOpen,
         setIsDialogBoxOpen,
         dialogBoxContent,

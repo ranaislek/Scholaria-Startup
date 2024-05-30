@@ -12,7 +12,7 @@ export interface Paper {
 
 export interface PaperData {
   title: string;
-  abstract: string;
-  publicationDate?: string;
+  abstract?: string;
+  publicationDate?: Date;
   pdf?: string;
 }

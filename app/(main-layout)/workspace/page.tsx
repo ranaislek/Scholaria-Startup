@@ -4,9 +4,9 @@ import { redirect, useSearchParams } from "next/navigation";
 
 function WorkspacePage() {
   const searchParams = useSearchParams();
-  const workplaceId = searchParams.get("id");
-  if (!workplaceId) redirect("/home");
-  return <Workspace id={workplaceId} />;
+  const workspaceId = searchParams.get("id");
+  if (!workspaceId) redirect("/home");
+  return <Workspace id={workspaceId} />;
 }
 
 export default WorkspacePage;
