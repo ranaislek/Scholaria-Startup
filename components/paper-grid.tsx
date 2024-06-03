@@ -39,9 +39,12 @@ const PaperGrid: React.FC<PaperGridProps> = ({
         )}
       </div>
       <div className="flex flex-wrap gap-x-4 gap-y-2">
-        {papers.map((paper, index) => (
-          <PaperCard key={paper.id} {...paper} isSelectable={isSelectable} />
-        ))}
+        {papers.map((paper, index) => {
+          if (!paper) return;
+          return (
+            <PaperCard key={index} {...paper} isSelectable={isSelectable} />
+          );
+        })}
       </div>
     </div>
   );

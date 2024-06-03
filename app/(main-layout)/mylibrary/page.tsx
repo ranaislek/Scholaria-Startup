@@ -20,10 +20,11 @@ const WorkspacePicker = () => {
     clearSelectedPapers,
     selectedWorkspacesIds,
     selectedPapersIds,
+    getUserWorkspaces,
   } = useWorkspace();
   const { setIsDialogBoxOpen } = useDialogBox();
   const toasts = useToasts();
-
+  const [isLoading, setIsLoading] = useState(false);
   const handleCheckboxChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     id: string
@@ -42,6 +43,7 @@ const WorkspacePicker = () => {
   };
 
   const addPaperToWorkspace = async () => {
+    setIsLoading(true);
     const paperId = selectedPapersIds[0];
     const token = localStorage.getItem("token");
 
@@ -56,8 +58,10 @@ const WorkspacePicker = () => {
       });
     });
     await Promise.all(promises);
+    await getUserWorkspaces();
     clearSelectedPapers();
     setSelectedWorkspacesIds([]);
+    setIsLoading(false);
     setIsDialogBoxOpen(false);
     toasts.success("Paper added to workspace successfully");
   };
@@ -81,18 +85,24 @@ const WorkspacePicker = () => {
       </div>
       <div className="flex gap-4 self-end">
         <div
-          onClick={cancelAction}
+          onClick={isLoading ? () => null : cancelAction}
           style={{ borderWidth: 1 }}
-          className="flex justify-center items-center h-10 min-w-24 cursor-pointer text-gray-900 border-gray-900 gap-1 px-2 py-1 bg-gray-100 rounded-md"
+          className={
+            "flex justify-center items-center h-10 min-w-24 cursor-pointer text-gray-900 border-gray-900 gap-1 px-2 py-1 bg-gray-100 rounded-md " +
+            (isLoading ? "opacity-50" : "")
+          }
         >
           <div>Cancel</div>
         </div>
         <div
-          onClick={addPaperToWorkspace}
+          onClick={isLoading ? () => null : addPaperToWorkspace}
           style={{ borderWidth: 1 }}
-          className="flex justify-center items-center h-10 min-w-24 cursor-pointer text-white gap-1 px-2 py-1 bg-primary rounded-md"
+          className={
+            "flex justify-center items-center h-10 min-w-24 cursor-pointer text-white gap-1 px-2 py-1 bg-primary rounded-md " +
+            (isLoading ? "opacity-50" : "")
+          }
         >
-          <div>Done</div>
+          <div>{isLoading ? <Loader size={10} /> : "Done"}</div>
         </div>
       </div>
     </>
@@ -101,17 +111,19 @@ const WorkspacePicker = () => {
 
 const MyLibraryPage = () => {
   const router = useRouter();
-  const { setSelectedPapersIds, workspaces } = useWorkspace();
+  const { setSelectedPapersIds, workspaces, getUserWorkspaces } =
+    useWorkspace();
   const toasts = useToasts();
   const [files, setFiles] = useState<FileData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState<string>("");
   const buttonRef = useRef(null);
   const { setIsDialogBoxOpen, setDialogBoxContent } = useDialogBox();
   const { setPDFDocumentUrl } = usePDFViewer();
 
   const handleFileSelect = async (newFile: File | null) => {
     if (!newFile) return;
-
+    setMessage("Loading...");
     const { name, type } = newFile;
 
     const res = await fetch("/api/generateSignedUrl", {
@@ -149,6 +161,8 @@ const MyLibraryPage = () => {
       fileUrl: publicUrl,
     };
     setFiles((prevFiles) => [newFileData, ...prevFiles]);
+    await getUserLibrary();
+    setMessage("");
     toasts.success("File uploaded successfully");
   };
 
@@ -171,28 +185,28 @@ const MyLibraryPage = () => {
     setIsDialogBoxOpen(true);
   };
 
+  const getUserLibrary = async () => {
+    setIsLoading(true);
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${API_BASE_URL}/library/`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setIsLoading(false);
+    const data = await res.json();
+    setFiles(
+      data.map((f: any) => {
+        return { id: f._id, ...f };
+      })
+    );
+  };
+
   useEffect(() => {
     //  on mount fetch user workspaces
-    const getUserLibrary = async () => {
-      setIsLoading(true);
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${API_BASE_URL}/library/`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setIsLoading(false);
-      const data = await res.json();
-      setFiles(
-        data.map((f: any) => {
-          return { id: f._id, ...f };
-        })
-      );
-    };
-
     getUserLibrary();
   }, []);
   return (
@@ -202,6 +216,9 @@ const MyLibraryPage = () => {
       <div className="mt-4 w-full">
         <FileInput onFileSelect={handleFileSelect} />
         <div className="mt-4 flex flex-col">
+          <div className="my-6 text-center text-gray-500 text-xl">
+            {message}
+          </div>
           {isLoading ? (
             <div className="mt-10 flex w-full justify-center items-center">
               <Loader />

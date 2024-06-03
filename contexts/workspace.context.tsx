@@ -1,6 +1,6 @@
 "use client";
 import { API_BASE_URL } from "@/api";
-import { PaperData } from "@/models/paper";
+import { Paper, PaperData } from "@/models/paper";
 import { IWorkspace } from "@/models/workspace";
 import { usePathname } from "next/navigation";
 
@@ -17,6 +17,7 @@ type IWorkspaceContext = {
   addNewWorkspace: (workspace: IWorkspace) => Promise<string | undefined>;
   deleteWorkspace: (workspaceId: string) => Promise<void>;
   clearSelectedPapers: () => void;
+  getUserWorkspaces: () => void;
 };
 
 const WorkspaceContext = React.createContext<IWorkspaceContext>({
@@ -30,6 +31,7 @@ const WorkspaceContext = React.createContext<IWorkspaceContext>({
   addNewWorkspace: async () => undefined,
   deleteWorkspace: async () => undefined,
   clearSelectedPapers: () => null,
+  getUserWorkspaces: () => null,
 });
 
 const useWorkspace = () => React.useContext(WorkspaceContext);
@@ -47,41 +49,41 @@ const WorkspacesProvider: React.FC<{ children: React.ReactElement }> = ({
 
   const [workspaces, setWorkspaces] = React.useState<IWorkspace[]>([]);
 
+  const getUserWorkspaces = async () => {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${API_BASE_URL}/workspaces/my-workspaces`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    const workspacesData = data
+      .map((w: any) => {
+        return { ...w, id: w._id };
+      })
+      .map((w: any) => {
+        return {
+          ...w,
+          papers: w.papers.map((p: any) => {
+            if (!p.paperData) return;
+            return {
+              id: p.paperData._id,
+              title: p.paperData.fileName,
+              pdf: p.paperData.fileUrl,
+              publicationDate: new Date(p.paperData.createdOn),
+            } as Paper;
+          }),
+        };
+      });
+
+    setWorkspaces(workspacesData);
+  };
+
   useEffect(() => {
     //  on mount fetch user workspaces
-    const getUserWorkspaces = async () => {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${API_BASE_URL}/workspaces/my-workspaces`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await res.json();
-      const workspacesData = data
-        .map((w: any) => {
-          return { ...w, id: w._id };
-        })
-        .map((w: any) => {
-          return {
-            ...w,
-            papers: w.papers.map((p: any) => {
-              if (!p.paperData) return;
-              return {
-                id: p.paperData._id,
-                title: p.paperData.fileName,
-                pdf: p.paperData.fileUrl,
-                publicationDate: new Date(p.paperData.createdOn),
-              } as PaperData;
-            }),
-          };
-        });
-
-      setWorkspaces(workspacesData);
-    };
-
     getUserWorkspaces();
   }, []);
 
@@ -159,6 +161,7 @@ const WorkspacesProvider: React.FC<{ children: React.ReactElement }> = ({
         deleteWorkspace,
         selectedWorkspacesIds,
         setSelectedWorkspacesIds,
+        getUserWorkspaces,
       }}
     >
       {children}

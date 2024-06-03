@@ -21,30 +21,26 @@ export default function Workspace({ id }: { id: string }) {
     deleteWorkspace,
   } = useWorkspace();
 
-  const targetWorkspace: IWorkspace | undefined = workspaces.find(
-    (w) => w.id === id
-  );
-
-  if (!targetWorkspace) {
+  if (!workspaces.find((w) => w.id === id)) {
     redirect("/home");
   }
 
+  const [targetWorkspace, setTargetWorkspace] = useState<
+    IWorkspace | undefined
+  >();
+
   const filtersRef = useRef<HTMLDivElement>(null);
   const sortRef = useRef<HTMLDivElement>(null);
-  // This is mock data
-  const [workspacePapers, setWorkspacePapers] = useState<Paper[]>(
-    targetWorkspace.papers ?? []
-  );
-  const [filtersResults, setFiltersResults] = useState<Paper[]>(
-    targetWorkspace.papers ?? []
-  );
+  const [workspacePapers, setWorkspacePapers] = useState<Paper[]>();
+  const [filtersResults, setFiltersResults] = useState<Paper[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSortListOpen, setIsSortListOpen] = useState<boolean>(false);
   const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
   const [isFilteringMode, setIsFilteringMode] = useState<boolean>(false);
 
   const deleteCurrentWorkspace = async () => {
-    await deleteWorkspace(targetWorkspace.id);
+    if (!targetWorkspace?.id) return;
+    await deleteWorkspace(targetWorkspace?.id);
   };
   const toggleSortList = () => {
     setIsSortListOpen(!isSortListOpen);
@@ -54,11 +50,12 @@ export default function Workspace({ id }: { id: string }) {
     setIsFiltersOpen(!isFiltersOpen);
   };
 
+  // TODO: Update these operations: markAsCompleted, removeFromWorkspace
   const markAsCompleted = () => {
     setIsLoading(true);
     setTimeout(() => {
       const updatedPapers = workspacePapers?.map((p) => {
-        if (selectedPapersIds.includes(p.id)) {
+        if (selectedPapersIds.includes(p?.id)) {
           return { ...p, isCompleted: true };
         } else {
           return p;
@@ -128,7 +125,7 @@ export default function Workspace({ id }: { id: string }) {
     setIsLoading(true);
     setTimeout(() => {
       setFiltersResults(
-        workspacePapers.filter((paper) => paper.isCompleted) || []
+        targetWorkspace?.papers?.filter((paper) => paper.isCompleted) || []
       );
       setIsLoading(false);
     }, 500);
@@ -139,7 +136,7 @@ export default function Workspace({ id }: { id: string }) {
     setIsLoading(true);
     setTimeout(() => {
       setFiltersResults(
-        workspacePapers.filter((paper) => !paper.isCompleted) || []
+        targetWorkspace?.papers?.filter((paper) => !paper.isCompleted) || []
       );
 
       setIsLoading(false);
@@ -185,14 +182,28 @@ export default function Workspace({ id }: { id: string }) {
     };
   }, [isSortListOpen]);
 
+  useEffect(() => {
+    const workspace: IWorkspace | undefined = workspaces.find(
+      (w) => w.id === id
+    );
+
+    if (!workspace) {
+      redirect("/home");
+    }
+
+    setTargetWorkspace(workspace);
+    setWorkspacePapers(workspace.papers);
+  }, [id, workspaces]);
   return (
     <div className="w-full h-full p-6">
       <div className="flex justify-between">
         <div>
-          <div className="text-2xl font-bold">{`${targetWorkspace.name} Workspace`}</div>
-          <div className="text-xs text-gray-500">
-            Created on {new Date(targetWorkspace.createdOn).toDateString()}
-          </div>
+          <div className="text-2xl font-bold">{`${targetWorkspace?.name} Workspace`}</div>
+          {targetWorkspace?.createdOn && (
+            <div className="text-xs text-gray-500">
+              Created on {new Date(targetWorkspace?.createdOn).toDateString()}
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-3">
           {selectedPapersIds.length > 0 && (
@@ -290,7 +301,9 @@ export default function Workspace({ id }: { id: string }) {
       {!isLoading && (
         <PaperGrid
           isSelectable={!isFilteringMode}
-          papers={isFilteringMode ? filtersResults : workspacePapers}
+          papers={
+            isFilteringMode ? filtersResults : targetWorkspace?.papers ?? []
+          }
         />
       )}
       {isLoading && (
