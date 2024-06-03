@@ -68,6 +68,7 @@ const WorkspacesProvider: React.FC<{ children: React.ReactElement }> = ({
           return {
             ...w,
             papers: w.papers.map((p: any) => {
+              if (!p.paperData) return;
               return {
                 id: p.paperData._id,
                 title: p.paperData.fileName,
