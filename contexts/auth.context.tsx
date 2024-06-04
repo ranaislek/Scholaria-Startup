@@ -10,6 +10,8 @@ type IAuth = {
 };
 
 type IUser = {
+  userType?: string;
+  fullName: string;
   email: string;
   token: string;
   pictureUrl?: string;

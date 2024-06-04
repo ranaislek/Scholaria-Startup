@@ -26,6 +26,7 @@ import { useWorkspace } from "@/contexts/workspace.context";
 import { IWorkspace } from "@/models/workspace";
 import { useAuth } from "@/contexts/auth.context";
 import Avatar from "boring-avatars";
+import { UserType, userTypeMapper } from "@/app/(auth-layout)/onboarding/page";
 
 type SideBarItem = {
   title: string;
@@ -345,11 +346,14 @@ const SideBar = () => {
           )}
           {isSideBarOpen && (
             <div className="flex flex-col">
-              <div className="font-bold"> </div>
-              <div className="font-light text-sm">
-                {" "}
-                {user?.email?.split("@")[0]}{" "}
+              <div className="font-bold">
+                {user?.fullName ?? user?.email?.split("@")[0]}{" "}
               </div>
+              {user?.userType && (
+                <div className="font-light text-sm">
+                  {userTypeMapper[user?.userType as UserType]}
+                </div>
+              )}
             </div>
           )}
         </div>

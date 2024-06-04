@@ -4,8 +4,8 @@ import { API_BASE_URL } from "@/api";
 import Loader from "@/components/loader";
 import { useAuth } from "@/contexts/auth.context";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { MouseEventHandler, useState } from "react";
+import { redirect, useRouter } from "next/navigation";
+import { MouseEventHandler, useEffect, useState } from "react";
 
 type LoginPageCreds = {
   email: string;
@@ -49,6 +49,13 @@ export default function LoginPage() {
     setUser(data);
     router.push("/home");
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      redirect("/home");
+    }
+  }, []);
 
   return (
     <>

@@ -67,6 +67,8 @@ const SearchProvider: React.FC<{ children: React.ReactElement }> = ({
       setSearchResults(data);
     };
 
+    if (searchQuery === "") return;
+
     if (debounceTimeoutRef.current) {
       clearTimeout(debounceTimeoutRef.current);
     }
