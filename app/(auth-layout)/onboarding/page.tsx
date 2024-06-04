@@ -3,17 +3,10 @@
 import { API_BASE_URL } from "@/api";
 import Loader from "@/components/loader";
 import { useAuth } from "@/contexts/auth.context";
+import { UserType, userTypeMapper } from "@/models/user";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-export type UserType = "masters" | "phd" | "professor" | "professional";
-export const userTypeMapper: Record<UserType, string> = {
-  masters: "Masters Student",
-  phd: "PhD Student",
-  professor: "Professor",
-  professional: "Professional",
-};
 
 type Category = {
   id: string;

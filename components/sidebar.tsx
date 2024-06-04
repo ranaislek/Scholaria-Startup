@@ -26,7 +26,7 @@ import { useWorkspace } from "@/contexts/workspace.context";
 import { IWorkspace } from "@/models/workspace";
 import { useAuth } from "@/contexts/auth.context";
 import Avatar from "boring-avatars";
-import { UserType, userTypeMapper } from "@/app/(auth-layout)/onboarding/page";
+import { userTypeMapper, UserType } from "@/models/user";
 
 type SideBarItem = {
   title: string;
