@@ -24,6 +24,7 @@ type ISearch = {
   searchQuery: string;
   setSearchQuery: (value: string) => void;
   searchResults: SearchResults[];
+  similarResults: SearchResults[];
 };
 
 const SearchContext = React.createContext<ISearch>({
@@ -34,6 +35,7 @@ const SearchContext = React.createContext<ISearch>({
   searchQuery: "",
   setSearchQuery: () => null,
   searchResults: [],
+  similarResults: [],
 });
 
 const useSearch = () => React.useContext(SearchContext);
@@ -45,12 +47,15 @@ const SearchProvider: React.FC<{ children: React.ReactElement }> = ({
   const [searchQuery, setSearchQuery] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
   const [searchResults, setSearchResults] = React.useState<SearchResults[]>([]);
+  const [similarResults, setSimilarResults] = React.useState<SearchResults[]>(
+    []
+  );
   const debounceTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     const fetchSearchResults = async () => {
       setIsLoading(true);
-      const res = await fetch(`${API_BASE_URL}/search`, {
+      const res1 = await fetch(`${API_BASE_URL}/search`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -58,13 +63,23 @@ const SearchProvider: React.FC<{ children: React.ReactElement }> = ({
         },
         body: JSON.stringify({ searchQuery: searchQuery }),
       });
-      const data = await res.json();
-      setIsLoading(false);
-      if (data.error || data.message) {
-        alert(data.error ?? data.message);
-        return;
+      const data1 = await res1.json();
+      setSearchResults(data1);
+
+      const res2 = await fetch(`${API_BASE_URL}/search/similar`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ searchQuery: searchQuery }),
+      });
+      const data2 = await res2.json();
+      setSimilarResults(data2);
+      if (data1.error || data1.message) {
+        alert(data1.error ?? data1.message);
       }
-      setSearchResults(data);
+      setIsLoading(false);
     };
 
     if (searchQuery === "") return;
@@ -93,6 +108,7 @@ const SearchProvider: React.FC<{ children: React.ReactElement }> = ({
         searchQuery,
         setSearchQuery,
         searchResults,
+        similarResults,
       }}
     >
       {children}

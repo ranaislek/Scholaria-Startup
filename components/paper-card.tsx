@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { RiCheckboxLine } from "react-icons/ri";
 import { RiCheckboxFill } from "react-icons/ri";
 
-const cardSize = {
+export const cardSize = {
   xs: 250,
   sm: 350,
   md: 400,
