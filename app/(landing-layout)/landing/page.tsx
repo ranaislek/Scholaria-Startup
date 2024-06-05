@@ -47,7 +47,7 @@ export default function LandingPage() {
         <div className="flex flex-col gap-10 w-full px-20 text-white">
           <div className="w-max">
             <div className="animate-typing overflow-hidden whitespace-nowrap border-r-4 border-r-white pr-5 text-6xl font-bold">
-              Your Research AI Assistant{" "}
+              Empowering Academic Journeys
             </div>
           </div>
           <div className="text-lg w-1/2">
