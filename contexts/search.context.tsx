@@ -55,11 +55,13 @@ const SearchProvider: React.FC<{ children: React.ReactElement }> = ({
   useEffect(() => {
     const fetchSearchResults = async () => {
       setIsLoading(true);
+      const token = localStorage.getItem("token");
       const res1 = await fetch(`${API_BASE_URL}/search`, {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ searchQuery: searchQuery }),
       });
@@ -71,6 +73,7 @@ const SearchProvider: React.FC<{ children: React.ReactElement }> = ({
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ searchQuery: searchQuery }),
       });

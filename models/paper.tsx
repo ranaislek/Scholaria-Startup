@@ -1,5 +1,5 @@
 export interface Paper {
-  id: string;
+  _id: string;
   title: string;
   authors?: string[];
   pdf?: string;
@@ -11,6 +11,7 @@ export interface Paper {
 }
 
 export interface PaperData {
+  _id: string;
   title: string;
   abstract?: string;
   publicationDate?: Date;

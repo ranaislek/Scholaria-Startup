@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/api";
 import { usePDFViewer } from "@/contexts/pdf-viewer.context";
 import { useWorkspace } from "@/contexts/workspace.context";
 import { Paper } from "@/models/paper";
@@ -22,7 +23,7 @@ function PaperCard({
   isCompleted,
   publicationDate,
   size = "sm",
-  id,
+  _id,
 }: Paper) {
   const ensureHttpsUrl = (url: string) => {
     const parsedUrl = new URL(url);
@@ -43,9 +44,27 @@ function PaperCard({
     router.push("/pdf-viewer");
   };
 
+  const logUserActivity = async () => {
+    const token = localStorage.getItem("token");
+    const res1 = await fetch(`${API_BASE_URL}/user/activity`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ type: "READ_PAPER", paperId: _id }),
+    });
+  };
+
+  const handlePaperCardClick = () => {
+    logUserActivity();
+    openPaperViewer();
+  };
+
   useEffect(() => {
-    setIsSelected(isPaperSelected(id));
-  }, [id, isPaperSelected, selectedPapersIds.length]);
+    setIsSelected(isPaperSelected(_id));
+  }, [_id, isPaperSelected, selectedPapersIds.length]);
 
   return (
     <div
@@ -58,7 +77,7 @@ function PaperCard({
       }
     >
       <iframe
-        onClick={openPaperViewer}
+        onClick={handlePaperCardClick}
         src={embedPdfUrl}
         title={title}
         width="100%"
@@ -66,7 +85,7 @@ function PaperCard({
       />
 
       <div
-        onClick={openPaperViewer}
+        onClick={handlePaperCardClick}
         className="p-4"
         style={{
           height: "30%",
@@ -78,13 +97,15 @@ function PaperCard({
         <p className="mt-2 text-gray-500 overflow-hidden truncate">
           {authors.join(", ")}
         </p>
-        <p className="mt-2 text-gray-300 overflow-hidden text-xs">
-          Uploaded on {publicationDate?.toDateString()}
-        </p>
+        {publicationDate && (
+          <p className="mt-2 text-gray-300 overflow-hidden text-xs">
+            {new Date(publicationDate).toDateString()}
+          </p>
+        )}
       </div>
       {isSelectable && (
         <div
-          onClick={() => togglePaperSelect(id)}
+          onClick={() => togglePaperSelect(_id)}
           className="absolute top-2 right-2 text-primary"
         >
           {!isSelected && (
