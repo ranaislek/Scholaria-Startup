@@ -46,7 +46,7 @@ export default function LandingPage() {
       <div className="absolute top-0 z-30 min-h-screen w-full flex justify-start items-center">
         <div className="flex flex-col gap-10 w-full px-20 text-white">
           <div className="w-max">
-            <div className="animate-typing overflow-hidden whitespace-nowrap border-r-4 border-r-white pr-5 text-6xl font-bold">
+            <div className="py-2 animate-typing overflow-hidden whitespace-nowrap border-r-4 border-r-white pr-5 text-6xl font-bold">
               Empowering Academic Journeys
             </div>
           </div>
