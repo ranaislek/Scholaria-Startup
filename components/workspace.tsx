@@ -55,7 +55,7 @@ export default function Workspace({ id }: { id: string }) {
     setIsLoading(true);
     setTimeout(() => {
       const updatedPapers = workspacePapers?.map((p) => {
-        if (selectedPapersIds.includes(p?.id)) {
+        if (selectedPapersIds.includes(p?._id)) {
           return { ...p, isCompleted: true };
         } else {
           return p;
@@ -72,7 +72,7 @@ export default function Workspace({ id }: { id: string }) {
     setIsLoading(true);
     setTimeout(() => {
       const updatedPapers = workspacePapers?.filter(
-        (p) => !selectedPapersIds.includes(p.id)
+        (p) => !selectedPapersIds.includes(p._id)
       );
       setWorkspacePapers(updatedPapers);
       clearSelectedPapers();

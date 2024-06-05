@@ -70,7 +70,7 @@ const WorkspacesProvider: React.FC<{ children: React.ReactElement }> = ({
           papers: w.papers.map((p: any) => {
             if (!p.paperData) return;
             return {
-              id: p.paperData._id,
+              _id: p.paperData._id,
               title: p.paperData.fileName,
               pdf: p.paperData.fileUrl,
               publicationDate: new Date(p.paperData.createdOn),
