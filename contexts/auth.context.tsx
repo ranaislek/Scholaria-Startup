@@ -1,6 +1,6 @@
 "use client";
 import { API_BASE_URL } from "@/api";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
 type IAuth = {
@@ -17,6 +17,8 @@ type IUser = {
   pictureUrl?: string;
 };
 
+const NO_AUTH_ROUTES = ["/login", "/register", "/landing"];
+
 const AuthContext = React.createContext<IAuth>({
   user: null,
   setUser: () => null,
@@ -29,6 +31,7 @@ const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = React.useState<IUser | null>(null);
 
   const logout = () => {
@@ -58,13 +61,13 @@ const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
       setUser(await userData.json());
     };
     const token = localStorage.getItem("token");
-    if (!token) {
+    if (!token && !NO_AUTH_ROUTES.includes(pathname)) {
       router.replace("/login");
       return;
     }
 
     getUserData();
-  }, []);
+  }, [pathname, router]);
 
   return (
     <AuthContext.Provider value={{ user, setUser, logout }}>
