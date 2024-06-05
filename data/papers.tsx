@@ -2,7 +2,7 @@ import { Paper } from "@/models/paper";
 
 export const papers: Paper[] = [
   {
-    id: "2",
+    _id: "2",
     publicationDate: new Date("11/11/2020"),
     isCompleted: false,
     title: "B On the Content Bias in Frechet Video Distance",
@@ -10,7 +10,7 @@ export const papers: Paper[] = [
     pdf: "https://arxiv.org/pdf/2404.12391.pdf",
   },
   {
-    id: "4",
+    _id: "4",
     publicationDate: new Date("11/12/2020"),
     isCompleted: false,
     title: "D Test of Fine-Tuning GPT by Astrophysical Data",
@@ -18,7 +18,7 @@ export const papers: Paper[] = [
     pdf: "https://arxiv.org/pdf/2404.10019.pdf",
   },
   {
-    id: "5",
+    _id: "5",
     publicationDate: new Date("11/11/2024"),
     isCompleted: false,
     title: "On the Content Bias in Frechet Video Distance",
@@ -26,7 +26,7 @@ export const papers: Paper[] = [
     pdf: "https://arxiv.org/pdf/2404.12391.pdf",
   },
   {
-    id: "6",
+    _id: "6",
     publicationDate: new Date("09/11/2020"),
     isCompleted: true,
     title: "Moving Object Segmentation: All You Need Is SAM (and Flow)",
@@ -34,7 +34,7 @@ export const papers: Paper[] = [
     pdf: "https://arxiv.org/pdf/2404.12389.pdf",
   },
   {
-    id: "3",
+    _id: "3",
     publicationDate: new Date("11/11/2019"),
     isCompleted: false,
     title: "C Moving Object Segmentation: All You Need Is SAM (and Flow)",
@@ -42,7 +42,7 @@ export const papers: Paper[] = [
     pdf: "https://arxiv.org/pdf/2404.12389.pdf",
   },
   {
-    id: "7",
+    _id: "7",
     publicationDate: new Date("11/11/2023"),
     isCompleted: true,
     title: "Test of Fine-Tuning GPT by Astrophysical Data",
@@ -50,7 +50,7 @@ export const papers: Paper[] = [
     pdf: "https://arxiv.org/pdf/2404.10019.pdf",
   },
   {
-    id: "8",
+    _id: "8",
     publicationDate: new Date("11/08/2021"),
     isCompleted: false,
     title: "On the Content Bias in Frechet Video Distance",
@@ -58,7 +58,7 @@ export const papers: Paper[] = [
     pdf: "https://arxiv.org/pdf/2404.12391.pdf",
   },
   {
-    id: "9",
+    _id: "9",
     publicationDate: new Date("11/02/2020"),
     isCompleted: true,
     title: "Moving Object Segmentation: All You Need Is SAM (and Flow)",
@@ -66,7 +66,7 @@ export const papers: Paper[] = [
     pdf: "https://arxiv.org/pdf/2404.12389.pdf",
   },
   {
-    id: "10",
+    _id: "10",
     publicationDate: new Date("11/01/2020"),
     isCompleted: false,
     title: "Test of Fine-Tuning GPT by Astrophysical Data",
@@ -74,7 +74,7 @@ export const papers: Paper[] = [
     pdf: "https://arxiv.org/pdf/2404.10019.pdf",
   },
   {
-    id: "11",
+    _id: "11",
     publicationDate: new Date("11/04/2020"),
     isCompleted: true,
     title: "On the Content Bias in Frechet Video Distance",
@@ -82,7 +82,7 @@ export const papers: Paper[] = [
     pdf: "https://arxiv.org/pdf/2404.12391.pdf",
   },
   {
-    id: "12",
+    _id: "12",
     publicationDate: new Date("11/11/2011"),
     isCompleted: false,
     title: "Moving Object Segmentation: All You Need Is SAM (and Flow)",
@@ -90,7 +90,7 @@ export const papers: Paper[] = [
     pdf: "https://arxiv.org/pdf/2404.12389.pdf",
   },
   {
-    id: "13",
+    _id: "13",
     publicationDate: new Date("01/01/2020"),
     isCompleted: false,
     title: "Test of Fine-Tuning GPT by Astrophysical Data",
@@ -98,7 +98,7 @@ export const papers: Paper[] = [
     pdf: "https://arxiv.org/pdf/2404.10019.pdf",
   },
   {
-    id: "1",
+    _id: "1",
     publicationDate: new Date("01/02/2020"),
     isCompleted: false,
     title: "A Test of Fine-Tuning GPT by Astrophysical Data",
@@ -106,7 +106,7 @@ export const papers: Paper[] = [
     pdf: "https://arxiv.org/pdf/2404.10019.pdf",
   },
   {
-    id: "14",
+    _id: "14",
     publicationDate: new Date("02/03/2020"),
     isCompleted: false,
     title: "On the Content Bias in Frechet Video Distance",
@@ -114,7 +114,7 @@ export const papers: Paper[] = [
     pdf: "https://arxiv.org/pdf/2404.12391.pdf",
   },
   {
-    id: "15",
+    _id: "15",
     publicationDate: new Date("07/07/2020"),
     isCompleted: false,
     title: "Moving Object Segmentation: All You Need Is SAM (and Flow)",
