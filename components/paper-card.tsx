@@ -39,7 +39,7 @@ function PDFViewer({ url }: { url: string }) {
   }, [url]);
 
   return (
-    <div className="flex justify-center items-center w-full h-[60vh]">
+    <div className="flex justify-center items-center w-full h-[50vh]">
       {pdfUrl.length > 0 ? (
         <iframe
           src={pdfUrl + "#toolbar=0&navpanes=0&page=1"}
