@@ -15,10 +15,41 @@ export const cardSize = {
   lg: 500,
 };
 
+function PDFViewer({ url }: { url: string }) {
+  const [pdfUrl, setPDFUrl] = useState("");
+
+  useEffect(() => {
+    const fetchPDF = async () => {
+      try {
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+        const response = await fetch(proxyUrl);
+        if (response.ok) {
+          setPDFUrl(proxyUrl);
+        } else {
+          throw new Error("Network response was not ok.");
+        }
+      } catch (error) {
+        console.error("Error fetching the PDF:", error);
+      }
+    };
+
+    fetchPDF();
+  }, [url]);
+
+  return (
+    <iframe
+      src={pdfUrl + "#toolbar=0&navpanes=0&page=1"}
+      title={url}
+      width="100%"
+      height="70%"
+    />
+  );
+}
+
 function PaperCard({
   title,
   authors = [],
-  pdf = "https://arxiv.org/pdf/2404.10019.pdf",
+  pdf,
   isSelectable,
   isCompleted,
   publicationDate,
@@ -40,7 +71,7 @@ function PaperCard({
   const [isSelected, setIsSelected] = useState<boolean>(false);
 
   const openPaperViewer = () => {
-    setPDFDocumentUrl(pdf);
+    setPDFDocumentUrl(pdf ?? getRandomPDF());
     router.push("/pdf-viewer");
   };
 
@@ -76,13 +107,7 @@ function PaperCard({
         "relative flex flex-col cursor-pointer bg-white rounded-xl shadow-md overflow-hidden mb-8 "
       }
     >
-      <iframe
-        onClick={handlePaperCardClick}
-        src={embedPdfUrl}
-        title={title}
-        width="100%"
-        height="70%"
-      />
+      <PDFViewer url={pdf ?? getRandomPDF()} />
 
       <div
         onClick={handlePaperCardClick}
@@ -132,3 +157,23 @@ function PaperCard({
 }
 
 export default PaperCard;
+
+const getRandomPDF = () => {
+  const list = [
+    "https://arxiv.org/pdf/0704.0251",
+    "https://arxiv.org/pdf/0704.0254",
+    "https://arxiv.org/pdf/0704.0266",
+    "https://arxiv.org/pdf/0704.0270",
+    "https://arxiv.org/pdf/0704.0274",
+    "https://arxiv.org/pdf/0704.0278",
+    "https://arxiv.org/pdf/0704.0284",
+    "https://arxiv.org/pdf/0704.0289",
+    "https://arxiv.org/pdf/0704.0290",
+    "https://arxiv.org/pdf/0704.0291",
+    "https://arxiv.org/pdf/0704.0293",
+    "https://arxiv.org/pdf/0704.0297",
+  ];
+
+  const randomIndex = Math.floor(Math.random() * list.length);
+  return list[randomIndex];
+};

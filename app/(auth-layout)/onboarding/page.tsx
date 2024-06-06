@@ -41,7 +41,6 @@ export default function OnboardingPage() {
     } else {
       setSelectedCategorys((prev) => [...prev, targetId]);
     }
-    console.log(selectedCategorys);
   };
 
   const handleSubmit = async (e: any) => {
