@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { RiCheckboxLine } from "react-icons/ri";
 import { RiCheckboxFill } from "react-icons/ri";
+import LoaderGif from "@/assets/200w.gif";
+import Image from "next/image";
 
 export const cardSize = {
   xs: 250,
@@ -37,12 +39,17 @@ function PDFViewer({ url }: { url: string }) {
   }, [url]);
 
   return (
-    <iframe
-      src={pdfUrl + "#toolbar=0&navpanes=0&page=1"}
-      title={url}
-      width="100%"
-      height="70%"
-    />
+    <div className="flex justify-center items-center w-full h-[60vh]">
+      {pdfUrl.length > 0 ? (
+        <iframe
+          src={pdfUrl + "#toolbar=0&navpanes=0&page=1"}
+          title={url}
+          className="w-full h-full border-none"
+        />
+      ) : (
+        <Image src={LoaderGif.src} alt={""} width={100} height={100} />
+      )}{" "}
+    </div>
   );
 }
 
@@ -100,7 +107,6 @@ function PaperCard({
       }
     >
       <PDFViewer url={pdf ?? getRandomPDF()} />
-
       <div
         onClick={handlePaperCardClick}
         className="p-4"
