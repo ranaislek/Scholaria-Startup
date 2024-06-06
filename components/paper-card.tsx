@@ -56,14 +56,6 @@ function PaperCard({
   size = "sm",
   _id,
 }: Paper) {
-  const ensureHttpsUrl = (url: string) => {
-    const parsedUrl = new URL(url);
-    parsedUrl.protocol = "https:";
-    return parsedUrl.toString();
-  };
-
-  const embedPdfUrl = ensureHttpsUrl(pdf + "#toolbar=0&page=1");
-
   const { isPaperSelected, togglePaperSelect, selectedPapersIds } =
     useWorkspace();
   const { setPDFDocumentUrl } = usePDFViewer();
