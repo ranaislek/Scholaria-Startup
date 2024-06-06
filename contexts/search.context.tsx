@@ -2,6 +2,7 @@
 import { API_BASE_URL } from "@/api";
 import { AuthorData } from "@/models/author";
 import { PaperData } from "@/models/paper";
+import { usePathname } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 
 type PaperSearchResult = {
@@ -101,6 +102,7 @@ const SearchProvider: React.FC<{ children: React.ReactElement }> = ({
       }
     };
   }, [searchQuery]);
+
   return (
     <SearchContext.Provider
       value={{

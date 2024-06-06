@@ -35,11 +35,11 @@ export default function OnboardingPage() {
     setUserType(e.target.value as UserType);
   };
 
-  const handleCategoryChange = (id: string) => {
-    if (selectedCategorys?.includes(id)) {
-      setSelectedCategorys((prev) => prev.filter((id) => id !== id));
+  const handleCategoryChange = (targetId: string) => {
+    if (selectedCategorys?.includes(targetId)) {
+      setSelectedCategorys((prev) => prev.filter((id) => id !== targetId));
     } else {
-      setSelectedCategorys((prev) => [...prev, id]);
+      setSelectedCategorys((prev) => [...prev, targetId]);
     }
     console.log(selectedCategorys);
   };
