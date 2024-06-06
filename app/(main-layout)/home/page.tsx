@@ -158,8 +158,9 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const fetchHomeData = async () => {
-      setIsLoading(true);
       const token = localStorage.getItem("token");
+      if (!token) return;
+      setIsLoading(true);
       const res = await fetch(`${API_BASE_URL}/home`, {
         method: "GET",
         headers: {
@@ -168,7 +169,12 @@ const App: React.FC = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setSections(await res.json());
+      const data = await res.json();
+      if (data && data.length > 0) {
+        setSections(data);
+      } else {
+        setSections([]);
+      }
       setIsLoading(false);
     };
     fetchHomeData();
@@ -197,7 +203,7 @@ const App: React.FC = () => {
           </div>
         </>
       ) : (
-        sections.map((s, index) => <PaperCarousel key={index} {...s} />)
+        sections?.map((s, index) => <PaperCarousel key={index} {...s} />)
       )}
     </div>
   );

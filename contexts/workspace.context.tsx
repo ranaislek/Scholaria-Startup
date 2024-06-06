@@ -51,6 +51,9 @@ const WorkspacesProvider: React.FC<{ children: React.ReactElement }> = ({
 
   const getUserWorkspaces = async () => {
     const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
     const res = await fetch(`${API_BASE_URL}/workspaces/my-workspaces`, {
       method: "GET",
       headers: {

@@ -48,7 +48,7 @@ const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
   useEffect(() => {
     const getUserData = async () => {
       const token = localStorage.getItem("token");
-
+      if (!token) return;
       const userData = await fetch(`${API_BASE_URL}/user/profile`, {
         method: "GET",
         headers: {
