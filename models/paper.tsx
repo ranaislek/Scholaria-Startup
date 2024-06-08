@@ -8,6 +8,7 @@ export interface Paper {
   // TODO: separare these UI properties from Paper data interface
   size?: "xs" | "sm" | "md" | "lg";
   isSelectable?: boolean;
+  abstract?: string;
 }
 
 export interface PaperData {

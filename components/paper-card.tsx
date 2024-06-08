@@ -9,6 +9,8 @@ import { RiCheckboxLine } from "react-icons/ri";
 import { RiCheckboxFill } from "react-icons/ri";
 import LoaderGif from "@/assets/200w.gif";
 import Image from "next/image";
+import SummaryCard from "./summary-card";
+import { PiSparkleFill } from "react-icons/pi";
 
 export const cardSize = {
   xs: 250,
@@ -55,6 +57,7 @@ function PDFViewer({ url }: { url: string }) {
 
 function PaperCard({
   title,
+  abstract,
   authors = [],
   pdf,
   isSelectable,
@@ -68,6 +71,7 @@ function PaperCard({
   const { setPDFDocumentUrl } = usePDFViewer();
   const router = useRouter();
   const [isSelected, setIsSelected] = useState<boolean>(false);
+  const [showSummary, setShowSummary] = useState(false);
 
   const openPaperViewer = () => {
     setPDFDocumentUrl(pdf ?? getRandomPDF());
@@ -97,60 +101,72 @@ function PaperCard({
   }, [_id, isPaperSelected, selectedPapersIds.length]);
 
   return (
-    <div
-      style={{
-        width: `${cardSize[size]}px`,
-        height: `${cardSize[size] * 1.3}px`,
-      }}
-      className={
-        "relative flex flex-col cursor-pointer bg-white rounded-xl shadow-md overflow-hidden mb-8 "
-      }
-    >
-      <PDFViewer url={pdf ?? getRandomPDF()} />
+    <>
       <div
-        onClick={handlePaperCardClick}
-        className="p-4"
         style={{
-          height: "30%",
+          width: `${cardSize[size]}px`,
+          height: `${cardSize[size] * 1.3}px`,
         }}
+        className={
+          "relative flex flex-col cursor-pointer bg-white rounded-xl shadow-md overflow-hidden mb-8 "
+        }
       >
-        <div className="uppercase tracking-wide text-sm text-primary font-semibold">
-          {title}
-        </div>
-        <p className="mt-2 text-gray-500 overflow-hidden truncate">
-          {authors.join(", ")}
-        </p>
-        {publicationDate && (
-          <p className="mt-2 text-gray-300 overflow-hidden text-xs">
-            {new Date(publicationDate).toDateString()}
+        <PDFViewer url={pdf ?? getRandomPDF()} />
+        <div
+          onClick={handlePaperCardClick}
+          className="p-4"
+          style={{
+            height: "30%",
+          }}
+        >
+          <div className="uppercase tracking-wide text-sm text-primary font-semibold">
+            {title}
+          </div>
+          <p className="mt-2 text-gray-500 overflow-hidden truncate">
+            {authors.join(", ")}
           </p>
+          {publicationDate && (
+            <p className="mt-2 text-gray-300 overflow-hidden text-xs">
+              {new Date(publicationDate).toDateString()}
+            </p>
+          )}
+        </div>
+        <div
+          onClick={() => setShowSummary(true)}
+          className="opacity-25 hover:opacity-100 absolute top-2 right-2 text-primary flex border-primary border-2 p-1 rounded-md"
+        >
+          Ask AI
+          <PiSparkleFill size={25} className="" />
+        </div>
+        {/* {isSelectable && (
+          <div
+            onClick={() => togglePaperSelect(_id)}
+            className="absolute top-2 right-2 text-primary"
+          >
+            {!isSelected && (
+              <RiCheckboxLine
+                size={25}
+                className="opacity-25 hover:opacity-100"
+              />
+            )}
+            {isSelected && (
+              <RiCheckboxFill
+                size={25}
+                className="hover:opacity-75 opacity-100"
+              />
+            )}
+          </div>
+        )} */}
+        {isCompleted && (
+          <div className="absolute text-sm bottom-2 right-2 text-green-500 bg-green-200 rounded-sm px-2 py-1">
+            Completed
+          </div>
         )}
       </div>
-      {isSelectable && (
-        <div
-          onClick={() => togglePaperSelect(_id)}
-          className="absolute top-2 right-2 text-primary"
-        >
-          {!isSelected && (
-            <RiCheckboxLine
-              size={25}
-              className="opacity-25 hover:opacity-100"
-            />
-          )}
-          {isSelected && (
-            <RiCheckboxFill
-              size={25}
-              className="hover:opacity-75 opacity-100"
-            />
-          )}
-        </div>
+      {showSummary && pdf && (
+        <SummaryCard url={pdf} onClose={() => setShowSummary(false)} />
       )}
-      {isCompleted && (
-        <div className="absolute text-sm bottom-2 right-2 text-green-500 bg-green-200 rounded-sm px-2 py-1">
-          Completed
-        </div>
-      )}
-    </div>
+    </>
   );
 }
 
