@@ -7,6 +7,7 @@ import { useSearch } from "@/contexts/search.context";
 import Avatar from "boring-avatars";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
+import Image from "next/image";
 
 export default function SearchPage() {
   const {
@@ -60,18 +61,31 @@ export default function SearchPage() {
                   className="cursor-pointer gap-4 h-auto w-96 flex flex-col justify-center items-center p-6 bg-white shadow-md rounded-md"
                   key={index}
                 >
-                  <Avatar
-                    size={120}
-                    name={r.item.author}
-                    variant="beam"
-                    colors={[
-                      "#beed80",
-                      "#59d999",
-                      "#31ada1",
-                      "#51647a",
-                      "#453c5c",
-                    ]}
-                  />
+                  {r.item.picture ? (
+                    <div
+                      style={{
+                        backgroundImage: `url(${r.item.picture})`,
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        width: 120,
+                        height: 120,
+                      }}
+                      className="rounded-full shadow-md"
+                    ></div>
+                  ) : (
+                    <Avatar
+                      size={120}
+                      name={r.item.author}
+                      variant="beam"
+                      colors={[
+                        "#beed80",
+                        "#59d999",
+                        "#31ada1",
+                        "#51647a",
+                        "#453c5c",
+                      ]}
+                    />
+                  )}
                   <div className="text-center">{r.item.author} </div>
                   <div className="text-sm bottom-2 right-2 text-primary bg-primary bg-opacity-30 rounded-sm px-2 py-1">
                     Author
@@ -120,18 +134,31 @@ export default function SearchPage() {
                     className="cursor-pointer gap-4 h-auto w-96 flex flex-col justify-center items-center p-6 bg-white shadow-md rounded-md"
                     key={index}
                   >
-                    <Avatar
-                      size={120}
-                      name={r.item.author}
-                      variant="beam"
-                      colors={[
-                        "#beed80",
-                        "#59d999",
-                        "#31ada1",
-                        "#51647a",
-                        "#453c5c",
-                      ]}
-                    />
+                    {r.item.picture ? (
+                      <div
+                        style={{
+                          backgroundImage: `url(${r.item.picture})`,
+                          backgroundPosition: "center",
+                          backgroundSize: "cover",
+                          width: 120,
+                          height: 120,
+                        }}
+                        className="rounded-full shadow-md"
+                      ></div>
+                    ) : (
+                      <Avatar
+                        size={120}
+                        name={r.item.author}
+                        variant="beam"
+                        colors={[
+                          "#beed80",
+                          "#59d999",
+                          "#31ada1",
+                          "#51647a",
+                          "#453c5c",
+                        ]}
+                      />
+                    )}
                     <div className="text-center">{r.item.author} </div>
                     <div className="text-sm bottom-2 right-2 text-primary bg-primary bg-opacity-30 rounded-sm px-2 py-1">
                       Author
