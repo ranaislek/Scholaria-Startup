@@ -12,7 +12,7 @@ ScholarIA is an innovative all-in-one research assistant designed to streamline 
 This tool was built as part of a joint project at UPC.
 
 <div align="center">
-    <img src="https://www.upc.edu/++theme++homeupc/assets/images/Logo.svg" alt="UPC Logo" width="300"/>
+    <img src="https://drac.bsc.es/sites/default/files/content/partner/image/upc-positiu-p3005-interior-blanc.png" alt="UPC Logo" width="300"/>
 </div>
 
 ---
